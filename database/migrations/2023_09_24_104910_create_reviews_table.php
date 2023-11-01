@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id('reviewId');
             $table->boolean('star');
             $table->text('description');
+            $table->softDeletes();
         });
     }
 

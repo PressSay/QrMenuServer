@@ -9,8 +9,8 @@ Route::group([
 ], function ($router) {
     
     Route::get('/customers', [CustomerController::class, 'findAll']);
-    Route::get('/tables', [CustomerController::class, 'findTable']);
-    Route::get('/investments', [CustomerController::class, 'findInvestment']);
+    Route::get('/tables', [CustomerController::class, 'findAllTable']);
+    Route::get('/investments', [CustomerController::class, 'findAllInvestment']);
     
     Route::get('/customers/{id}', [CustomerController::class, 'findOne']);
     Route::get('/tables/{id}', [CustomerController::class, 'findOneTable']);

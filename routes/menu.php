@@ -20,7 +20,7 @@ Route::group([
     Route::get('/menus/{id}', [MenuController::class, "findOne"]);
     Route::get('/categories/{id}', [CategoryController::class, 'findOne']);
     Route::get('/dishes/{id}', [DishController::class,'findOne']);
-    Route::get('/reviews/{id}', [CategoryController::class,'findOne']);
+    Route::get('/reviews/{id}', [ReviewController::class,'findOne']);
 
     Route::post('/menus', [MenuController::class, 'create']);
     Route::post('/categories', [CategoryController::class, 'create']);

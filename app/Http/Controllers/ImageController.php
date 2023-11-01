@@ -32,7 +32,7 @@ class ImageController extends Controller
             }
             return $this->storeImageDish($request);
         } else if ($forWhat == 'user') {
-            $user = ($request['userId']) ? User::find($request['userId']) : $request->user();
+            $user = ($request['userId']!=null) ? User::find($request['userId']) : $request->user();
             if ($user == null) {
                 return [
                     'message' => 'user does not exist'
@@ -73,7 +73,7 @@ class ImageController extends Controller
             'source' => $source
         ]);
 
-        $userId = ($request['userId']) ? $request['userId'] : $request->user()->userId;
+        $userId = ($request['userId'] != null) ? $request['userId'] : $request->user()->userId;
         $imageUser = ImageAccount::create([
             'userId' => $userId,
             'imageId' => $image->imageId

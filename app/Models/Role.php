@@ -17,7 +17,7 @@ class Role extends Model
     protected $primaryKey = 'nameRole';
 
     protected $fillable = [
-        'name',
+        'nameRole',
         'description',
         'dateExpire'
     ];

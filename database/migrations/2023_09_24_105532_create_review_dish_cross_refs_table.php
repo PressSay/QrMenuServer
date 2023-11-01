@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('review_dish_cross_refs', function (Blueprint $table) {
             $table->unsignedBigInteger('reviewId');
             $table->unsignedBigInteger('dishId');
-            $table->unsignedBigInteger('customerId')->nullable();
-            $table->primary(['reviewId', 'dishId']);
+            $table->unsignedBigInteger('customerId');
+            $table->primary(['reviewId', 'dishId', 'customerId']);
         });
     }
 

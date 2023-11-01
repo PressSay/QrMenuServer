@@ -17,6 +17,7 @@ class Category extends Model
     public $timestamps = false;
 
     public $fillable = [
+        'categoryId',
         'name',
         'menuId'
     ];

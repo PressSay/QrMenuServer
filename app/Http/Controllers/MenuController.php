@@ -3,10 +3,14 @@
 namespace App\Http\Controllers;
 
 
-use App\Models\Menu;
-use App\Models\Category;
 use App\Models\Dish;
+use App\Models\Menu;
+use App\Models\Image;
+use App\Models\Review;
+use App\Models\Category;
+use App\Models\ImageDish;
 use Illuminate\Http\Request;
+use App\Models\ReviewDishCrossRef;
 
 class MenuController extends Controller
 {
@@ -15,7 +19,7 @@ class MenuController extends Controller
         $menuBuilder = Menu::where('name', 'like','%'. $request->name .'%');
         $menus = $menuBuilder->get();
 
-        return ['menus' => $menus];
+        return $menus;
     }
 
     public function findOne(string $id)
@@ -23,10 +27,10 @@ class MenuController extends Controller
         $menu = Menu::find($id);
 
         if (!$menu) {
-            return ['message' => 'menu does not exist'];
+            abort(404, 'menu does not exist');
         }
 
-        return ['menu' => $menu];
+        return $menu;
     }
 
     public function create(Request $request)
@@ -41,7 +45,7 @@ class MenuController extends Controller
         $menu = Menu::where('name', '=', $request->name)->first();
 
         if ($menu != null) {
-            return ['message' => 'menu name must unique!!'];
+            abort(404, 'menu already exists');
         }
 
         $menu = Menu::create([
@@ -49,7 +53,7 @@ class MenuController extends Controller
             'isUsed' => $isUsed
         ]);
 
-        return ['menu_upload' => $menu];
+        return "success";
     }
 
     public function update(string $id, Request $request)
@@ -62,7 +66,7 @@ class MenuController extends Controller
         $menu = Menu::where('menuId', $id)->first();
 
         if ($menu == null) {
-            return ['message' => 'menu does not exist'];
+            abort(404, 'menu does not exist');
         }
         
         $menu->update([
@@ -70,33 +74,31 @@ class MenuController extends Controller
             'isUsed' => $request->isUsed
         ]);
 
-        return ['menu' => $menu];
+        return "success";
     }
 
     public function delete(string $id)
     {
-
         $menuBuilder = Menu::where('menuId', '=', $id);
         $menu = $menuBuilder->first();
 
         if (!$menu) {
-            return ['message' => 'menu does not exist'];
+            abort(404, 'menu does not exist');
         }
 
         $categoryBuilder = Category::where('menuId', '=', $id);
-        $dishBuilder = Dish::whereIn("categoryId", $categoryBuilder->select('categoryId')->get());
-
-        $categories = $categoryBuilder->select('*')->get();
-        $dishes = $dishBuilder->get();
+        $dishBuilder = Dish::whereIn("categoryId", $categoryBuilder->pluck('categoryId'));
+        $imageDishBuilder = ImageDish::whereIn('dishId', $dishBuilder->pluck('dishId'));
+        $imageBuilder = Image::whereIn('imageId', $imageDishBuilder->pluck('imageId'));
+        $reviewDishCrossRefBuilder = ReviewDishCrossRef::whereIn('dishId', $dishBuilder->pluck('dishId'));
+        $reviewBuilder = Review::whereIn('reviewId', $reviewDishCrossRefBuilder->pluck('reviewId'));
         
         $menuBuilder->delete();
         $categoryBuilder->delete();
         $dishBuilder->delete();
+        $imageBuilder->delete();
+        $reviewBuilder->delete();
 
-        return [
-            'menu' => $menu,
-            'category' => $categories,
-            'dishes' => $dishes
-        ];
+        return "success";
     }
 }

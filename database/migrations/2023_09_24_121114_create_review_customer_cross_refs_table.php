@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('review_customer_cross_refs', function (Blueprint $table) {
             $table->unsignedBigInteger('reviewId');
-            $table->unsignedBigInteger('customerId')->nullable();
+            $table->unsignedBigInteger('customerId');
             $table->primary('reviewId');
         });
     }

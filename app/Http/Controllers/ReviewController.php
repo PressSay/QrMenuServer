@@ -22,10 +22,13 @@ class ReviewController extends Controller
             foreach ($primaryModels as $primaryModel) {
                 $review = Review::find($primaryModel->reviewId);
                 $dish = Dish::find($primaryModel->dishId);
+                $customer = Customer::find($primaryModel->customerId);
+                $customerId = ($customer == null) ? -1 : $customer->customerId;
 
                 $models[] = [
-                    'review' => $review,
-                    'dish' => $dish
+                    $review,
+                    $dish,
+                    $customerId
                 ];
             }
         } else if ($request->customer) {
@@ -36,10 +39,12 @@ class ReviewController extends Controller
                 $customer = Customer::find($primaryModel->customerId);
 
                 $models[] = [
-                    'review' => $review,
-                    'customer' => $customer
+                    $review,
+                    $customer
                 ];
             }
+        } else {
+            $models = Review::all();
         }
 
         return $models;
@@ -52,9 +57,12 @@ class ReviewController extends Controller
 
         if ($reviewDishCrossRef != null) {
             $dish = Dish::find($reviewDishCrossRef->dishId);
+            $customer = Customer::find($reviewDishCrossRef->customerId);
+            $customerId = ($customer == null) ? -1 : $customer->customerId;
             return [
                 'review' => $review,
-                'dish' => $dish
+                'dish' => $dish,
+                'customerId' => $customerId
             ];
         } else if ($reviewCustomerCrossRef != null) {
             $customer = Customer::find($reviewCustomerCrossRef->customerId);
@@ -64,7 +72,7 @@ class ReviewController extends Controller
             ];
         }
 
-        return ['message' => 'invalid'];
+        abort(404, 'review does not exist');
     }
     public function create(Request $request)
     {
@@ -97,10 +105,7 @@ class ReviewController extends Controller
             ReviewCustomerCrossRef::create($cross);
         }
 
-        return [
-            'review' => $review,
-            'cross' => $cross
-        ];
+        return "success";
     }
 
     public function update(string $id, Request $request)
@@ -112,13 +117,16 @@ class ReviewController extends Controller
 
         $isGood = ($request->isGood == "true") ? true : false;
         $review = Review::where('reviewId', '=', $id)->first();
+        if (!$review) {
+            abort(404, 'review does not exist');
+        }
 
         $review->update([
             'description' => $request->description,
             'star' => $isGood
         ]);
 
-        return ['review' => $review];
+        return "success";
     }
 
     public function delete(string $id)
@@ -128,6 +136,10 @@ class ReviewController extends Controller
         $reviewCustomerCrossRefBuilder = ReviewCustomerCrossRef::where('reviewId', '=', $id);
 
         $review = $reviewBuilder->first();
+        if (!$review) {
+            abort(404, 'review does not exist');
+        }
+
         $reviewDishCrossRef = $reviewDishCrossRefBuilder->first();
         $reviewCustomerCrossRef = $reviewCustomerCrossRefBuilder->first();
         $cross = ($reviewDishCrossRef != null) ? $reviewDishCrossRef : $reviewCustomerCrossRef;
@@ -135,10 +147,7 @@ class ReviewController extends Controller
         $review->delete();
         $cross->delete();
 
-        return [
-            'review' => $review,
-            'cross' => $cross
-        ];
+        return "success";
     }
 
     public function deleteAll(Request $request)
@@ -152,17 +161,10 @@ class ReviewController extends Controller
         $crossBuilder = ($request->forDish == 0) ?
             ReviewCustomerCrossRef::where('customerId', '=', $request->customerId) :
             ReviewDishCrossRef::where('dishId', '=', $request->dishId);
-            
-        $reviewBuilder = Review::whereIn('reviewId', $crossBuilder->select('reviewId')->get());
+        $reviewBuilder = Review::whereIn('reviewId', $crossBuilder->pluck('reviewId'));
 
-        $cross = $crossBuilder->get();
-        $review = $reviewBuilder->get();
         $reviewBuilder->delete();
-        $crossBuilder->delete();
 
-        return [
-            'review' => $review,
-            'cross' => $cross
-        ];
+        return "success";
     }
 }

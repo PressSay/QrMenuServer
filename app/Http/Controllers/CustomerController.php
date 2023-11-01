@@ -39,9 +39,9 @@ class CustomerController extends Controller
             $order = Order::where('customerId', '=', $model->customerId)->first();
             $customerDishCrossRef = CustomerDishCrossRef::where('customerId', '=', $model->customerId)->get();
             $customers[] = [
-                'customer' => $model,
-                'order' => $order,
-                'customerDish' => $customerDishCrossRef
+                $model,
+                $order,
+                $customerDishCrossRef
             ];
         }
 
@@ -51,14 +51,14 @@ class CustomerController extends Controller
     {
         $model = Customer::find($id);
         if ($model == null) {
-            return ['message' => 'customer does not exist'];
+            abort(404, 'customer does not exist');
         }
         $customerDishCrossRef = CustomerDishCrossRef::where('customerId', '=', $id)->get();
         $order = Order::where('customerId', '=', $model->customerId)->first();
         return [
-            'customer' => $model,
-            'order' => $order,
-            'customerDish' => $customerDishCrossRef
+            $model,
+            $order,
+            $customerDishCrossRef
         ];
     }
 
@@ -66,22 +66,20 @@ class CustomerController extends Controller
     {
         $model = DB::table('tableOrder')->where('nameTable', '=', $id)->first();
         if ($model == null) {
-            return ['message' => 'table does not exist'];
+            abort(404, 'table does not exist');
         }
         return ['table' => $model];
     }
 
-    public function findTable()
+    public function findAllTable()
     {
         $models = DB::table('tableOrder')->get();
-
         return ['tables' => $models];
     }
 
-    public function findInvestment()
+    public function findAllInvestment()
     {
         $models = DB::table('investment')->get();
-
         return ['investments' => $models];
     }
     public function createCustomer(Request $request)
@@ -108,7 +106,7 @@ class CustomerController extends Controller
             'address' => $request->address,
         ]);
 
-        $order = Order::create([
+        Order::create([
             'customerId' => $customer->customerId,
             'status' => $request->statusOrder,
             'promotion' => $request->promotion,
@@ -116,13 +114,9 @@ class CustomerController extends Controller
             'nameTable' => $request->tableId,
         ]);
 
-        $customerDishCrossRefs = $this->saveDishes($request->dishes, $customer);
+        $this->saveDishes($request->dishes, $customer);
 
-        return [
-            'customer' => $customer,
-            'order' => $order,
-            'customerDish' => $customerDishCrossRefs,
-        ];
+        return "success";
     }
     public function createTable(Request $request)
     {
@@ -142,7 +136,7 @@ class CustomerController extends Controller
         DB::table('tableOrder')->truncate();
         DB::table('tableOrder')->insert($models);
 
-        return ['models' => $models];
+        return "success";
     }
     public function createInvestment(Request $request)
     {
@@ -158,7 +152,7 @@ class CustomerController extends Controller
 
         DB::table('investment')->insert($model);
 
-        return ['investment' => $model];
+        return "success";
     }
     public function updateCustomer(string $id, Request $request)
     {
@@ -183,7 +177,7 @@ class CustomerController extends Controller
         $customerBuilder = Customer::where('customerId', '=', $id);
         $customer = $customerBuilder->first();
         if ($customer == null) {
-            return ['message' => 'customer does not exist'];
+            abort(404, 'customer does not exist');
         }
         $customer->update($customerInput);
 
@@ -196,13 +190,9 @@ class CustomerController extends Controller
         ]);
 
         CustomerDishCrossRef::where('customerId', '=', $id)->delete();
-        $customerDishCrossRefs = $this->saveDishes($request->dishes, $customer);
+        $this->saveDishes($request->dishes, $customer);
 
-        return [
-            'customer' => $customer,
-            'order' => $order,
-            'customerDishCrossRef' => $customerDishCrossRefs,
-        ];
+        return "success";
     }
     public function updateTable(string $id, Request $request)
     {
@@ -213,28 +203,36 @@ class CustomerController extends Controller
             'nameTable' => $id,
             'status' => $request->status
         ];
-        DB::table('tableOrder')->where('nameTable', '=', $id)
-            ->update($table);
+        $tableOrderBuilder = DB::table('tableOrder')->where('nameTable', '=', $id);
 
-        return ['table' => $table];
+        if ($tableOrderBuilder->first() == null) {
+            abort(404, 'table does not exist');
+        }
+        $tableOrderBuilder->update($table);
+
+        return "success";
     }
     public function deleteCustomer(string $id)
     {
         $order = Order::where('customerId', '=', $id)->first();
-        $order->delete();
-
         $customerBuilder = Customer::where('customerId', '=', $id);
         $customer = $customerBuilder->first();
+        if ($customer == null) {
+            abort(404, 'customer does not exist');
+        }
         $customer->delete();
-
-        return ['customer' => $customer, 'order' => $order];
+        $order->delete();
+        return "success";
     }
     public function deleteInvestment(string $id)
     {
         $investmentBuilder = DB::table('investment')->where('name', '=', $id);
         $investment = $investmentBuilder->first();
+        if ($investment == null) {
+            abort(404, 'investment does not exist');
+        }
         $investmentBuilder->delete();
 
-        return ['investment' => $investment];
+        return "success";
     }
 }

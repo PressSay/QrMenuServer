@@ -22,7 +22,7 @@ return new class extends Migration {
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
             $table->softDeletes();
-            $table->timestamp('created');
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
         });
 
         Schema::create('tableOrder', function (Blueprint $table) {

@@ -55,6 +55,6 @@ class User extends Authenticatable
 
     public function imageAccount(): BelongsTo
     {
-        return $this->belongsTo(ImageAccount::class, 'userId', 'id');
+        return $this->belongsTo(ImageAccount::class, 'id', 'userId');
     }
 }
