@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Dish;
-use App\Models\Customer;
 use App\Models\Order;
+use App\Models\Customer;
 use Illuminate\Http\Request;
+use App\Events\OrderNotification;
 use Illuminate\Support\Facades\DB;
 use App\Models\CustomerDishCrossRef;
 
@@ -16,6 +17,10 @@ class CustomerController extends Controller
         foreach ($arrayDish as $dish) {
             $dishId = $dish['dishId'];
             $amount = $dish['amount'];
+            $promotion = $dish['promotion'];
+
+            if ($dishId == null || $amount == null || $promotion == null)
+                continue;
 
             $dish = Dish::where('dishId', '=', $dishId)->first();
 
@@ -24,7 +29,7 @@ class CustomerController extends Controller
                     'customerId' => $customer->customerId,
                     'dishId' => $dishId,
                     'amount' => $amount,
-                    'promotion' => 0
+                    'promotion' => $promotion
                 ]);
             }
         }
@@ -45,6 +50,8 @@ class CustomerController extends Controller
             ];
         }
 
+        $customer = Customer::find(1);
+        OrderNotification::dispatch($customer);
         return $customers;
     }
     public function findOne(string $id)
@@ -115,6 +122,8 @@ class CustomerController extends Controller
         ]);
 
         $this->saveDishes($request->dishes, $customer);
+
+        
 
         return "success";
     }
