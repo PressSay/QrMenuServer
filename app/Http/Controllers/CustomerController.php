@@ -8,6 +8,7 @@ use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\CustomerDishCrossRef;
+use App\Events\OrderNotification;
 
 class CustomerController extends Controller
 {
@@ -44,7 +45,8 @@ class CustomerController extends Controller
                 $customerDishCrossRef
             ];
         }
-
+        $customer = Customer::find(1);
+        OrderNotification::dispatch($customer);
         return $customers;
     }
     public function findOne(string $id)

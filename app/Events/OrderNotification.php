@@ -3,23 +3,26 @@
 namespace App\Events;
 
 use Illuminate\Broadcasting\Channel;
-use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Broadcasting\PresenceChannel;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class OrderNotification
+class OrderNotification implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
+
+    protected $customer;
 
     /**
      * Create a new event instance.
      */
-    public function __construct()
+    public function __construct($customer)
     {
-        //
+        // careful $this->customerId not $this->$customerId
+        $this->customer = $customer;
     }
 
     /**
@@ -30,7 +33,21 @@ class OrderNotification
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('channel-name'),
+            new Channel('channel-order'),
+        ];
+    }
+
+    public function broadcastAs(): string
+    {
+        return 'order-notification';
+    }
+
+    public function broadcastWith(): array
+    {
+        return [
+            'message' => 'New order has been placed!',
+            'orderId' => $this->customer->customerId ?? -1,
+            'tableId' => $this->customer->order()->first()->nameTable ?? -1,
         ];
     }
 }
