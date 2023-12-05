@@ -10,16 +10,23 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class MenuNotification
+class MenuNotification implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
+
+    protected $tableId;
 
     /**
      * Create a new event instance.
      */
-    public function __construct()
+    public function __construct($tableId)
     {
-        //
+        $this->tableId = $tableId;
+    }
+
+    public function broadcastAs(): string
+    {
+        return 'menu-notification';
     }
 
     /**

@@ -15,6 +15,9 @@ class DishController extends Controller
     public function findAll(Request $request)
     {
         $dishBuilder = Dish::where('name', 'like', '%' . $request->name . '%');
+        if ($request->categoryId) {
+            $dishBuilder->where('categoryId' , $request->categoryId);
+        }
         $dishes = $dishBuilder->get();
         $arrDishImg = [];
         foreach ($dishes as $dish) {
@@ -27,6 +30,8 @@ class DishController extends Controller
 
     public function findOne(string $id) {
         $dish = Dish::find($id);
+        $images = Image::whereIn('imageId', $dish->imageDish()->pluck('imageId'))->first();
+        $dish['imageDish'] = $images;
         if (!$dish) {
             abort(404, 'dish does not exist');
         }
@@ -98,10 +103,11 @@ class DishController extends Controller
     public function delete(string $id)
     {
         $imageDishBuilder = ImageDish::where('dishId', '=', $id);
-        $imageBuilder = Image::whereIn('imageId', $imageDishBuilder->pluck('imageId'));
+        $imageBuilder = Image::where('imageId', '<>', 1);
+        $imageBuilder = $imageBuilder->whereIn('imageId', $imageDishBuilder->pluck('imageId'));
         $reviewDishCrossRefBuilder = ReviewDishCrossRef::where('dishId', '=', $id);
         $reviewBuilder = Review::whereIn('reviewId', $reviewDishCrossRefBuilder->pluck('reviewId'));
-
+        
 
         $dish = Dish::where('dishId', '=', $id)->first();
         if (!$dish) {

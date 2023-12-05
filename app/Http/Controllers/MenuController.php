@@ -45,23 +45,26 @@ class MenuController extends Controller
         $menu = Menu::where('name', '=', $request->name)->first();
 
         if ($menu != null) {
-            abort(404, 'menu already exists');
+            $request->newName = $request->name;
+            $this->update($menu->menuId, $request);
+        } else {
+            $menu = Menu::create([
+                'name' => $request->name,
+                'isUsed' => $isUsed
+            ]);
         }
-
-        $menu = Menu::create([
-            'name' => $request->name,
-            'isUsed' => $isUsed
-        ]);
 
         return "success";
     }
 
     public function update(string $id, Request $request)
     {
-        $request->validate([
-            'newName' => 'required',
-            'isUsed' => 'required'
-        ]);
+        if ($request->name == null) {
+            $request->validate([
+                'newName' => 'required',
+                'isUsed' => 'required'
+            ]);
+        }
 
         $menu = Menu::where('menuId', $id)->first();
 
@@ -89,7 +92,10 @@ class MenuController extends Controller
         $categoryBuilder = Category::where('menuId', '=', $id);
         $dishBuilder = Dish::whereIn("categoryId", $categoryBuilder->pluck('categoryId'));
         $imageDishBuilder = ImageDish::whereIn('dishId', $dishBuilder->pluck('dishId'));
-        $imageBuilder = Image::whereIn('imageId', $imageDishBuilder->pluck('imageId'));
+        
+        $imageBuilder = Image::where('imageId', '<>', 1);
+        $imageBuilder = $imageBuilder->whereIn('imageId', $imageDishBuilder->pluck('imageId'));
+
         $reviewDishCrossRefBuilder = ReviewDishCrossRef::whereIn('dishId', $dishBuilder->pluck('dishId'));
         $reviewBuilder = Review::whereIn('reviewId', $reviewDishCrossRefBuilder->pluck('reviewId'));
         

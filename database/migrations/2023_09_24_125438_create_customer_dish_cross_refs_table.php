@@ -17,7 +17,6 @@ return new class extends Migration
             $table->integer('amount');
             $table->primary(['customerId', 'dishId']);
             $table->integer('promotion')->default(0);
-            $table->softDeletes();
         });
     }
 

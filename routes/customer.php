@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::group([
     'middleware' => 'auth:sanctum',
-    'prefix' => 'api'
+    'prefix' => 'api/global'
 ], function ($router) {
     
     Route::get('/customers', [CustomerController::class, 'findAll']);
@@ -25,4 +25,14 @@ Route::group([
     Route::delete('/customers/{id}', [CustomerController::class, 'deleteCustomer']);
     Route::delete('/investments/{id}', [CustomerController::class, 'deleteInvestment']);
 
+});
+
+Route::group([
+    'prefix' => 'api/local'
+], function ($router) {
+
+    Route::get('/customers', [CustomerController::class, 'findAll']);
+
+    Route::post('/customers', [CustomerController::class, 'createCustomer']);
+    
 });

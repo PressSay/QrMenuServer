@@ -8,6 +8,7 @@ use App\Models\Image;
 use App\Models\Category;
 use App\Models\ImageDish;
 use Illuminate\Http\Request;
+use Response;
 
 class CategoryController extends Controller
 {
@@ -67,7 +68,7 @@ class CategoryController extends Controller
 
         $category->update(['name' => $request->newName]);
 
-        return "success";
+        return response('success', 200);
     }
 
     public function delete(string $id)
@@ -79,7 +80,8 @@ class CategoryController extends Controller
         $category->delete();
         $dishBuilder = Dish::where('categoryId', '=', $id);
         $imageDishBuilder = ImageDish::whereIn('dishId', $dishBuilder->pluck('dishId'));
-        $imageBuilder = Image::whereIn('imageId', $imageDishBuilder->pluck('imageId'));
+        $imageBuilder = Image::where('imageId', '<>', 1);
+        $imageBuilder = $imageBuilder->whereIn('imageId', $imageDishBuilder->pluck('imageId'));
 
         $imageBuilder->delete();
         $dishBuilder->delete();

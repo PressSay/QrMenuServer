@@ -21,27 +21,23 @@ class ReviewController extends Controller
 
             foreach ($primaryModels as $primaryModel) {
                 $review = Review::find($primaryModel->reviewId);
-                $dish = Dish::find($primaryModel->dishId);
-                $customer = Customer::find($primaryModel->customerId);
-                $customerId = ($customer == null) ? -1 : $customer->customerId;
-
-                $models[] = [
-                    $review,
-                    $dish,
-                    $customerId
-                ];
+                if ($review != null)
+                    continue;
+                $model["review"] = $review;
+                $model["reviewDish"] = $primaryModel;
+                $models[] = $model;
             }
         } else if ($request->customer) {
             $primaryModels = ReviewCustomerCrossRef::all();
 
             foreach ($primaryModels as $primaryModel) {
                 $review = Review::find($primaryModel->reviewId);
-                $customer = Customer::find($primaryModel->customerId);
+                if ($review != null)
+                    continue;
+                $model["review"] = $review;
+                $model["reviewCustomer"] = $primaryModel;
 
-                $models[] = [
-                    $review,
-                    $customer
-                ];
+                $models[] = $model;
             }
         } else {
             $models = Review::all();
@@ -49,27 +45,27 @@ class ReviewController extends Controller
 
         return $models;
     }
-    public function findOne($id)
+    public function findOne($id, Request $request)
     {
         $review = Review::find($id);
-        $reviewDishCrossRef = ReviewDishCrossRef::where('reviewId', '=', $id)->first();
-        $reviewCustomerCrossRef = ReviewCustomerCrossRef::where('reviewId', '=', $id)->first();
 
-        if ($reviewDishCrossRef != null) {
-            $dish = Dish::find($reviewDishCrossRef->dishId);
-            $customer = Customer::find($reviewDishCrossRef->customerId);
-            $customerId = ($customer == null) ? -1 : $customer->customerId;
-            return [
-                'review' => $review,
-                'dish' => $dish,
-                'customerId' => $customerId
-            ];
-        } else if ($reviewCustomerCrossRef != null) {
-            $customer = Customer::find($reviewCustomerCrossRef->customerId);
-            return [
-                'review' => $review,
-                'customer' => $customer
-            ];
+        if ($review != null) {
+            if ($request->dish) {
+                $model['review'] = $review;
+                $model["reviewDish"] = ReviewDishCrossRef::where("reviewId", '=', $review->reviewId)->first();
+                if ($model["reviewDish"] != null)
+                    return $model;
+                abort(404, "reviewDish does not exist");
+            }
+            if ($request->customer) {
+                $model['review'] = $review;
+                $model["reviewCustomer"] = ReviewCustomerCrossRef::where("reviewId", '=', $review->reviewId)->first();
+                if ($model["reviewCustomer"] != null)
+                    return $model;
+                abort(404, "reviewCustomer does not exist");
+            } else {
+                return $review;
+            }
         }
 
         abort(404, 'review does not exist');
@@ -132,20 +128,20 @@ class ReviewController extends Controller
     public function delete(string $id)
     {
         $reviewBuilder = Review::where('reviewId', '=', $id);
-        $reviewDishCrossRefBuilder = ReviewDishCrossRef::where('reviewId', '=', $id);
-        $reviewCustomerCrossRefBuilder = ReviewCustomerCrossRef::where('reviewId', '=', $id);
+        // $reviewDishCrossRefBuilder = ReviewDishCrossRef::where('reviewId', '=', $id);
+        // $reviewCustomerCrossRefBuilder = ReviewCustomerCrossRef::where('reviewId', '=', $id);
 
         $review = $reviewBuilder->first();
         if (!$review) {
             abort(404, 'review does not exist');
         }
 
-        $reviewDishCrossRef = $reviewDishCrossRefBuilder->first();
-        $reviewCustomerCrossRef = $reviewCustomerCrossRefBuilder->first();
-        $cross = ($reviewDishCrossRef != null) ? $reviewDishCrossRef : $reviewCustomerCrossRef;
+        // $reviewDishCrossRef = $reviewDishCrossRefBuilder->first();
+        // $reviewCustomerCrossRef = $reviewCustomerCrossRefBuilder->first();
+        // $cross = ($reviewDishCrossRef != null) ? $reviewDishCrossRef : $reviewCustomerCrossRef;
 
         $review->delete();
-        $cross->delete();
+        // $cross->delete();
 
         return "success";
     }
