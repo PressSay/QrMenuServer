@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Auth;
 
-<<<<<<< HEAD
 use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
@@ -11,13 +10,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
 use App\Providers\RouteServiceProvider;
 use App\Http\Requests\Auth\LoginRequest;
-=======
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\LoginRequest;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Auth;
->>>>>>> 3126c1cb7291b969b408e8be6a78fb5da74cf0bc
 
 class AuthenticatedSessionController extends Controller
 {

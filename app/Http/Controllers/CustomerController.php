@@ -49,12 +49,7 @@ class CustomerController extends Controller
             $model->customerDishCrossRefs = $customerDishCrossRef;
             $customers[] = $model;
         }
-<<<<<<< HEAD
         
-=======
-        $customer = Customer::find(1);
-        OrderNotification::dispatch($customer);
->>>>>>> 3126c1cb7291b969b408e8be6a78fb5da74cf0bc
         return $customers;
     }
     public function findOne(string $id)

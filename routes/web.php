@@ -15,7 +15,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-<<<<<<< HEAD
 Route::get('/', function (Request $request) {
     if ($request->lang == 'vn') {
         App::setLocale('vn');
@@ -78,12 +77,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-=======
-Route::get('/', function () {
-    App\Events\OrderNotification::dispatch();
-    return null;
-    // return ['Laravel' => app()->version()];
->>>>>>> 3126c1cb7291b969b408e8be6a78fb5da74cf0bc
 });
 
 Route::get('/api/global/env', function () {

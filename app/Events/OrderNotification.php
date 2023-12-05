@@ -2,12 +2,9 @@
 
 namespace App\Events;
 
-<<<<<<< HEAD
 use App\Models\Order;
 use App\Models\Customer;
 use App\Models\CustomerDishCrossRef;
-=======
->>>>>>> 3126c1cb7291b969b408e8be6a78fb5da74cf0bc
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -50,7 +47,6 @@ class OrderNotification implements ShouldBroadcast
 
     public function broadcastWith(): array
     {
-<<<<<<< HEAD
         $model = Customer::find($this->customer->customerId);
         $customerDishCrossRef = CustomerDishCrossRef::where('customerId', '=', $model->customerId)->get();
         $order = Order::where('customerId', '=', $model->customerId)->first();
@@ -62,12 +58,5 @@ class OrderNotification implements ShouldBroadcast
         $model->customerDishCrossRefs = $customerDishCrossRef;
         
         return $model->toArray();
-=======
-        return [
-            'message' => 'New order has been placed!',
-            'orderId' => $this->customer->customerId ?? -1,
-            'tableId' => $this->customer->order()->first()->nameTable ?? -1,
-        ];
->>>>>>> 3126c1cb7291b969b408e8be6a78fb5da74cf0bc
     }
 }
