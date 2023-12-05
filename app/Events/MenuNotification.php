@@ -10,6 +10,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
+<<<<<<< HEAD
 class MenuNotification implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
@@ -27,6 +28,18 @@ class MenuNotification implements ShouldBroadcast
     public function broadcastAs(): string
     {
         return 'menu-notification';
+=======
+class MenuNotification
+{
+    use Dispatchable, InteractsWithSockets, SerializesModels;
+
+    /**
+     * Create a new event instance.
+     */
+    public function __construct()
+    {
+        //
+>>>>>>> 3126c1cb7291b969b408e8be6a78fb5da74cf0bc
     }
 
     /**
