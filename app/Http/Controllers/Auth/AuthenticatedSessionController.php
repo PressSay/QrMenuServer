@@ -2,30 +2,46 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\LoginRequest;
+use Illuminate\View\View;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Illuminate\Support\Facades\App;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\RedirectResponse;
+use App\Providers\RouteServiceProvider;
+use App\Http\Requests\Auth\LoginRequest;
 
 class AuthenticatedSessionController extends Controller
 {
     /**
+     * Display the login view.
+     */
+    public function create(Request $request): View
+    {
+        if ($request->lang == 'vn') {
+            App::setLocale('vn');
+        }
+        $categoryId = $request->categoryId;
+        $tableId = $request->tableOrder;
+        return view('auth.login', ['categoryId' => $categoryId, 'tableId' => $tableId]);
+    }
+
+    /**
      * Handle an incoming authentication request.
      */
-    public function store(LoginRequest $request): Response
+    public function store(LoginRequest $request): RedirectResponse
     {
         $request->authenticate();
 
         $request->session()->regenerate();
 
-        return response()->noContent();
+        return redirect()->intended(RouteServiceProvider::HOME);
     }
 
     /**
      * Destroy an authenticated session.
      */
-    public function destroy(Request $request): Response
+    public function destroy(Request $request): RedirectResponse
     {
         Auth::guard('web')->logout();
 
@@ -33,6 +49,6 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return response()->noContent();
+        return redirect('/');
     }
 }

@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Role;
 use App\Models\User;
+use App\Models\ImageAccount;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\Registered;
+
 
 class RoleController extends Controller
 {
@@ -25,8 +27,39 @@ class RoleController extends Controller
             'nameRole' => 'staff',
             'description' => 'staff have permissions to manage staff',
         ]);
-        
+
         $user = User::create([
+            'name' => "user",
+            'email' => "user@gmail.com",
+            'password' => Hash::make("123456789"),
+            'level'=> 0,
+            'Exp' => 0,
+            'phoneNumber' => "0343861387",
+            'address' => "Vinh Long",
+            'nameRole' => "user",
+        ]);
+        ImageAccount::create([
+            "userId" => 1,
+            "imageId" => 2
+        ]);
+
+
+        $staff = User::create([
+            'name' => "staff",
+            'email' => "staff@gmail.com",
+            'password' => Hash::make("123456789"),
+            'level'=> 0,
+            'Exp' => 0,
+            'phoneNumber' => "0343861388",
+            'address' => "Vinh Long",
+            'nameRole' => "staff",
+        ]);
+        ImageAccount::create([
+            "userId" => 2,
+            "imageId" => 2
+        ]);
+
+        $admin = User::create([
             'name' => "admin",
             'email' => "admin@gmail.com",
             'password' => Hash::make("123456789"),
@@ -34,15 +67,22 @@ class RoleController extends Controller
             'Exp' => 0,
             'phoneNumber' => "0343861387",
             'address' => "Vinh Long",
-            'nameRole' => 'admin',
+            'nameRole' => "admin",
         ]);
+        ImageAccount::create([
+            "userId" => 3,
+            "imageId" => 2
+        ]);
+
         event(new Registered($user));
-        $token = $user->createToken('token-name', ['server:update'])->plainTextToken;
+        $tokenAdmin = $admin->createToken('token-name', ['server:update'])->plainTextToken;
 
         return [
             'arrRole' => $arrRole,
-            'admin' => $user,
-            'token' => $token
+            'admin' => $admin,
+            'staff' => $staff,
+            'user' => $user,
+            'tokenAdmin' => $tokenAdmin,
         ];
     }
 

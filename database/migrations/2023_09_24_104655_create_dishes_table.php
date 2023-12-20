@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->id('dishId');
             $table->string('name');
             $table->string('description');
-            $table->decimal('cost', 9, 3);
+            $table->integer('cost');
             $table->integer('numberOfTimesCalled');
             $table->foreignId('categoryId')
                 ->references('categoryId')

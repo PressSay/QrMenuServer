@@ -1,0 +1,93 @@
+@props(['close', 'search', 'home', 'register', 'category', 'auth' => 'user', 'tableId' => '', 'categoryId' => ''])
+
+<div class="navbar bg-base-100 z-30 container mx-auto mb-10" >
+    <div class="navbar-start">
+        <div class="dropdown">
+            <label tabindex="0" class="btn btn-ghost btn-circle">
+                @if (Auth::check())
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M16 15C13.8 15 12 14.3 10.6 12.9C9.2 11.5 8.5 9.7 8.5 7.5C8.5 5.3 9.2 3.5 10.6 2.1C12 0.7 13.8 0 16 0C18.2 0 20 0.7 21.4 2.1C22.8 3.5 23.5 5.3 23.5 7.5C23.5 9.7 22.8 11.5 21.4 12.9C20 14.3 18.2 15 16 15ZM0 31.05V26.35C0 25.0833 0.316667 24 0.95 23.1C1.58333 22.2 2.4 21.5167 3.4 21.05C5.63333 20.05 7.775 19.3 9.825 18.8C11.875 18.3 13.9333 18.05 16 18.05C18.0667 18.05 20.1167 18.3083 22.15 18.825C24.1833 19.3417 26.3154 20.0866 28.5461 21.0597C29.5894 21.5306 30.4259 22.2133 31.0556 23.108C31.6852 24.0027 32 25.0833 32 26.35V31.05H0ZM3 28.05H29V26.35C29 25.8167 28.8417 25.3083 28.525 24.825C28.2083 24.3417 27.8167 23.9833 27.35 23.75C25.2167 22.7167 23.2667 22.0083 21.5 21.625C19.7333 21.2417 17.9 21.05 16 21.05C14.1 21.05 12.25 21.2417 10.45 21.625C8.65 22.0083 6.7 22.7167 4.6 23.75C4.13333 23.9833 3.75 24.3417 3.45 24.825C3.15 25.3083 3 25.8167 3 26.35V28.05ZM16 12C17.3 12 18.375 11.575 19.225 10.725C20.075 9.875 20.5 8.8 20.5 7.5C20.5 6.2 20.075 5.125 19.225 4.275C18.375 3.425 17.3 3 16 3C14.7 3 13.625 3.425 12.775 4.275C11.925 5.125 11.5 6.2 11.5 7.5C11.5 8.8 11.925 9.875 12.775 10.725C13.625 11.575 14.7 12 16 12Z"
+                            fill="#3C691B" />
+                    </svg>
+                @else
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                        stroke="#435F43">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h7" />
+                    </svg>
+                @endif
+            </label>
+            <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+                @if ($tableId === "" && $categoryId === "")
+                    <li><a style="color: #435F43;"
+                            href="{{ route('menus') }}">{{ $home }}</a>
+                    </li>
+                @else
+                    <li><a style="color: #435F43;"
+                            href="{{ route('menus') . '?tableOrder=' . $tableId . '&categoryId=' . $categoryId }}">{{ $home }}</a>
+                    </li>
+                @endif
+                @if (Auth::check())
+                    <li><a href="/profile">{{ $auth }}</a></li>
+                @else
+                    <li><a style="color: #435F43;"
+                            href="{{ route('register') . '?tableOrder=' . $tableId . '&categoryId=' . $categoryId }}">{{ $register }}</a>
+                    </li>
+                @endif
+                <li><a style="color: #435F43;"
+                        href="{{ route('categories') . '?tableOrder=' . $tableId . '&categoryId=' . $categoryId }}">{{ $category }}</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="navbar-center">
+        <a class="btn btn-ghost text-xl"
+            href="{{ route('menus') . '?tableOrder=' . $tableId . '&categoryId=' . $categoryId }}">
+            <x-application-logo class="w-16 h-16 fill-current text-gray-500" />
+        </a>
+    </div>
+    <div class="navbar-end">
+        <label for="my_modal_6" class="btn btn-ghost btn-circle">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                stroke="#435F43">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+        </label>
+
+        <!-- Put this part before </body> tag -->
+        <input type="checkbox" id="my_modal_6" class="modal-toggle" />
+        <div class="modal">
+            <div class="modal-box">
+                <div class="flex justify-center mb-4">
+                    <input id="search-input-text" type="text" placeholder="{{ __('nav.type_here') }}"
+                        class="input input-sm input-bordered w-full max-w-xs" />
+                    <button id="search-btn" class="btn btn-sm ml-2">{{ $search }}</button>
+                </div>
+                <div class="flex justify-center">
+                    <label for="my_modal_6" class="btn btn-xs">{{ $close }}</label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- <button class="btn btn-ghost btn-circle">
+        <div class="dropdown dropdown-end">
+            <label tabindex="0" class="btn btn-ghost btn-circle">
+                <div class="indicator">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                    </svg>
+                    <span class="badge badge-xs badge-primary indicator-item"></span>
+                </div>
+            </label>
+            <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+                <li><a>notication 1</a></li>
+                <li><a>notication 2</a></li>
+            </ul>
+        </div>
+    </button> --}}
+</div>

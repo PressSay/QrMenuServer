@@ -27,9 +27,11 @@ class StaffController extends Controller
         $user = $request->user();
         if ($user->nameRole == 'admin') {
             $users = User::where('nameRole', 'staff')->get();
-            $image = $user->imageAccount()->first();
-            $imageId = ($image == null ? -1 : $image->imageId);
-            $user['image'] = Image::where('imageId', '=', $imageId)->first();
+            foreach ($users as $key => $value) {
+                $image = $users[$key]->imageAccount()->first();
+                $imageId = ($image == null ? -1 : $image->imageId);
+                $users[$key]['image'] = Image::where('imageId', '=', $imageId)->first();
+            }
             return $users;
         }
         abort(403, 'You are not authorized');

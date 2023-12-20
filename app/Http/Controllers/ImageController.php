@@ -15,7 +15,7 @@ class ImageController extends Controller
     {
         $request->validate([
             'image' => 'required',
-            'image.*' => 'present|image|mimes:jpeg,jpg,gif,svg',
+            'image.*' => 'present|image|mimes:jpeg,jpg,gif,svg,png',
             'forWhat' => 'required',
             'dishId' => 'required'
         ]);
@@ -73,7 +73,15 @@ class ImageController extends Controller
             'source' => $source
         ]);
 
+        
+
         $userId = ($request['userId'] != null) ? $request['userId'] : $request->user()->userId;
+        // check image user exist and delete it
+        $imageUser = ImageAccount::where("userId", '=', $userId)->first();
+        if ($imageUser != null) {
+            $imageUser->delete();
+        }
+
         $imageUser = ImageAccount::create([
             'userId' => $userId,
             'imageId' => $image->imageId

@@ -33,7 +33,7 @@ return new class extends Migration {
 
         Schema::create('investment', function (Blueprint $table) {
             $table->string('name');
-            $table->decimal('cost', 9, 3);
+            $table->integer('cost');
             $table->primary('name');
         });
     }

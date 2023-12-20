@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('phoneNumber');
             $table->integer('Exp');
             $table->text('address');
-            $table->string('nameRole');
+            $table->string('nameRole')->nullable();
             $table->foreign('nameRole')->references('nameRole')->on('roles');
         });
 

@@ -3,24 +3,25 @@
 namespace App\Http\Controllers;
 
 use App\Models\Dish;
-use App\Models\Order;
 use App\Models\Customer;
+use App\Models\Order;
 use Illuminate\Http\Request;
-use App\Events\OrderNotification;
 use Illuminate\Support\Facades\DB;
 use App\Models\CustomerDishCrossRef;
+use App\Events\OrderNotification;
 
 class CustomerController extends Controller
 {
-    public function saveDishes($arrayDish, $customer) {
+    public function saveDishes($arrayDish, $customer)
+    {
         $customerDishCrossRefs = [];
+        if (gettype($arrayDish) == "string") {
+            // "dish" : "[{"dishId":1,"amount":2},{"dishId":2,"amount":3}]"
+            $arrayDish = json_decode($arrayDish, true);
+        }
         foreach ($arrayDish as $dish) {
             $dishId = $dish['dishId'];
             $amount = $dish['amount'];
-            $promotion = $dish['promotion'];
-
-            if ($dishId == null || $amount == null || $promotion == null)
-                continue;
 
             $dish = Dish::where('dishId', '=', $dishId)->first();
 
@@ -29,7 +30,7 @@ class CustomerController extends Controller
                     'customerId' => $customer->customerId,
                     'dishId' => $dishId,
                     'amount' => $amount,
-                    'promotion' => $promotion
+                    'promotion' => 0
                 ]);
             }
         }
@@ -41,17 +42,14 @@ class CustomerController extends Controller
         $customers = [];
 
         foreach ($models as $model) {
-            $order = Order::where('customerId', '=', $model->customerId)->first();
             $customerDishCrossRef = CustomerDishCrossRef::where('customerId', '=', $model->customerId)->get();
-            $customers[] = [
-                $model,
-                $order,
-                $customerDishCrossRef
-            ];
+            $order = Order::where('customerId', '=', $model->customerId)->first();
+            $model->order = $order;
+            unset($model["deleted_at"]);
+            $model->customerDishCrossRefs = $customerDishCrossRef;
+            $customers[] = $model;
         }
-
-        $customer = Customer::find(1);
-        OrderNotification::dispatch($customer);
+        
         return $customers;
     }
     public function findOne(string $id)
@@ -62,11 +60,9 @@ class CustomerController extends Controller
         }
         $customerDishCrossRef = CustomerDishCrossRef::where('customerId', '=', $id)->get();
         $order = Order::where('customerId', '=', $model->customerId)->first();
-        return [
-            $model,
-            $order,
-            $customerDishCrossRef
-        ];
+        $model->order = $order;
+        $model->customerDishCrossRefs = $customerDishCrossRef;
+        return $model;
     }
 
     public function findOneTable(string $id)
@@ -75,19 +71,19 @@ class CustomerController extends Controller
         if ($model == null) {
             abort(404, 'table does not exist');
         }
-        return ['table' => $model];
+        return $model;
     }
 
     public function findAllTable()
     {
         $models = DB::table('tableOrder')->get();
-        return ['tables' => $models];
+        return $models;
     }
 
     public function findAllInvestment()
     {
         $models = DB::table('investment')->get();
-        return ['investments' => $models];
+        return $models;
     }
     public function createCustomer(Request $request)
     {
@@ -102,13 +98,20 @@ class CustomerController extends Controller
             'statusOrder' => 'required',
             'payments' => 'required',
             'tableId' => 'required',
+            // 'codeStaff' => 'required'
         ]);
+
+        // $codeStaff = env('CODE_STAFF');
+
+        // if ($request->codeStaff != $codeStaff) {
+        //     abort(404, 'code of staff does not exist');
+        // }
 
         $customer = Customer::create([
             'userId' => $request->userId,
             'dateExpireCode' => date('y-m-d', strtotime("+3 day", time() - 86400)),
             'name' => $request->name,
-            'code' => $request->code,
+            'code' => md5(microtime()),
             'phoneNumber' => $request->phoneNumber,
             'address' => $request->address,
         ]);
@@ -122,8 +125,9 @@ class CustomerController extends Controller
         ]);
 
         $this->saveDishes($request->dishes, $customer);
-
         
+        if ($customer && $request->tableId != "0")
+            OrderNotification::dispatch($customer);
 
         return "success";
     }
@@ -183,6 +187,7 @@ class CustomerController extends Controller
             'address' => $request->address,
         ];
 
+
         $customerBuilder = Customer::where('customerId', '=', $id);
         $customer = $customerBuilder->first();
         if ($customer == null) {
@@ -225,12 +230,14 @@ class CustomerController extends Controller
     {
         $order = Order::where('customerId', '=', $id)->first();
         $customerBuilder = Customer::where('customerId', '=', $id);
+        $customerDishCrossRefBuilder = CustomerDishCrossRef::where('customerId', '=', $id);
         $customer = $customerBuilder->first();
         if ($customer == null) {
             abort(404, 'customer does not exist');
         }
         $customer->delete();
         $order->delete();
+        // $customerDishCrossRefBuilder->delete();
         return "success";
     }
     public function deleteInvestment(string $id)
