@@ -22,17 +22,13 @@ class Customer extends Model
         'name',
         'code',
         'phoneNumber',
-        'address'
+        'address',
+        'created_at'
     ];
 
-    public function reviewDishCrossRefs(): HasMany
+    public function reviewBill(): HasOne
     {
-        return $this->hasMany(ReviewDishCrossRef::class, 'customerId', 'customerId');
-    }
-
-    public function reviewCustomerCrossRefs(): HasMany
-    {
-        return $this->hasMany(ReviewCustomerCrossRef::class, 'customerId', 'customerId');
+        return $this->hasOne(ReviewCustomerCrossRef::class, 'customerId', 'customerId');
     }
 
     public function customerDishCrossRefs(): HasMany

@@ -58,11 +58,13 @@ class ImageController extends Controller
             'imageId' => $image->imageId
         ]);
 
-        return [
-            'source' => $source,
-            'imageDish' => $imageDish,
-            'image' => $image
-        ];
+        // return [
+        //     'source' => $source,
+        //     'imageDish' => $imageDish,
+        //     'image' => $image
+        // ];
+
+        return $source;
     }
 
     public function storeImageUser(Request $request)
@@ -87,11 +89,13 @@ class ImageController extends Controller
             'imageId' => $image->imageId
         ]);
 
-        return [
-            'source' => $source,
-            'imageUser' => $imageUser,
-            'image' => $image
-        ];
+        // return [
+        //     'source' => $source,
+        //     'imageUser' => $imageUser,
+        //     'image' => $image
+        // ];
+
+        return $source;
     }
 
     public function store(Request $request, $isImageUser)

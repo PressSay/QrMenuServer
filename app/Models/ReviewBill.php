@@ -6,23 +6,18 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class ReviewCustomerCrossRef extends Model
+class ReviewBill extends Model
 {
-    use HasFactory;
+    use HasFactory, softDeletes;
 
     public $timestamps = false;
+    public $incrementing = false;
 
     protected $fillable = [
-        'reviewId',
         'customerId',
     ];
 
     protected $primaryKey = 'reviewId';
-
-    public function review(): BelongsTo
-    {
-        return $this->belongsTo(Review::class, 'reviewId', 'reviewId');
-    }
 
     public function customer(): BelongsTo
     {

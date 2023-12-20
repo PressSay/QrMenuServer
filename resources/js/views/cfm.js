@@ -215,6 +215,7 @@ async function main() {
                 alert(isSuccess);
             } catch (err) { 
                 console.log(err);
+                alert("false");
             }
 
             location.reload();

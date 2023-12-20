@@ -21,8 +21,8 @@ return new class extends Migration {
             $table->foreign('userId')->references('id')->on('users')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
-            $table->softDeletes();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->softDeletes();
         });
 
         Schema::create('tableOrder', function (Blueprint $table) {

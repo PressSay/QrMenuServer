@@ -11,10 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('review_customer_cross_refs', function (Blueprint $table) {
-            $table->unsignedBigInteger('reviewId');
+        Schema::create('review_bills', function (Blueprint $table) {
             $table->unsignedBigInteger('customerId');
-            $table->primary('reviewId');
+            $table->string('description');
+            $table->integer('star');
+            $table->primary('customerId');
+            $table->softDeletes();
         });
     }
 
@@ -23,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('review_customer_cross_refs');
+        Schema::dropIfExists('review_bills');
     }
 };

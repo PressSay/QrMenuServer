@@ -46,7 +46,8 @@ Route::get('/categories', function (Request $request) {
     App\Models\Category::findOrFail($categoryId);
 
     if (is_numeric($tableId) && $tableId > 0 && $tableId < DB::table('tableOrder')->count()) {
-        $categoryBuilder = App\Models\Category::where('name', 'like', '%' . $name . '%');
+        $menu = App\Models\Menu::where('isUsed', '=', 1)->first();
+        $categoryBuilder = App\Models\Category::where('menuId', '=', $menu->menuId)->where('name', 'like', '%' . $name . '%');
         $arrCategory = $categoryBuilder->get();
         return view('genre', ['tableId' => $tableId, 'categoryId' => $categoryId, 'categories' => $arrCategory]);
     }
@@ -88,4 +89,5 @@ require __DIR__ . '/auth.php';
 require __DIR__ . '/image.php';
 require __DIR__ . '/menu.php';
 require __DIR__ . '/customer.php';
+require __DIR__ . '/review.php';
 require __DIR__ . '/api.php';

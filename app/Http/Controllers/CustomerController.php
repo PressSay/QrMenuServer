@@ -12,6 +12,12 @@ use App\Events\OrderNotification;
 
 class CustomerController extends Controller
 {
+    public function getLastKey()
+    {
+        $customer = Customer::orderBy('customerId', 'desc')->first();
+        return $customer->customerId;
+    }
+
     public function saveDishes($arrayDish, $customer)
     {
         $customerDishCrossRefs = [];
@@ -38,6 +44,7 @@ class CustomerController extends Controller
     }
     public function findAll()
     {
+        
         $models = Customer::all();
         $customers = [];
 
@@ -49,7 +56,7 @@ class CustomerController extends Controller
             $model->customerDishCrossRefs = $customerDishCrossRef;
             $customers[] = $model;
         }
-        
+
         return $customers;
     }
     public function findOne(string $id)
@@ -98,23 +105,36 @@ class CustomerController extends Controller
             'statusOrder' => 'required',
             'payments' => 'required',
             'tableId' => 'required',
-            // 'codeStaff' => 'required'
+            // 'created' => 'required',
+            'codeStaff' => 'required',
         ]);
 
-        // $codeStaff = env('CODE_STAFF');
+        $codeStaff = env('CODE_STAFF');
 
-        // if ($request->codeStaff != $codeStaff) {
-        //     abort(404, 'code of staff does not exist');
-        // }
+        if ($request->codeStaff != $codeStaff) {
+            abort(404, 'code of staff does not exist');
+        }
 
-        $customer = Customer::create([
-            'userId' => $request->userId,
-            'dateExpireCode' => date('y-m-d', strtotime("+3 day", time() - 86400)),
-            'name' => $request->name,
-            'code' => md5(microtime()),
-            'phoneNumber' => $request->phoneNumber,
-            'address' => $request->address,
-        ]);
+        if ($request->created != null) {
+            $customer = Customer::create([
+                'userId' => $request->userId,
+                'dateExpireCode' => date('y-m-d', strtotime("+3 day", time() - 86400)),
+                'name' => $request->name,
+                'code' => md5(microtime()),
+                'phoneNumber' => $request->phoneNumber,
+                'address' => $request->address,
+                'created_at' => $request->created
+            ]);
+        } else {
+            $customer = Customer::create([
+                'userId' => $request->userId,
+                'dateExpireCode' => date('y-m-d', strtotime("+3 day", time() - 86400)),
+                'name' => $request->name,
+                'code' => md5(microtime()),
+                'phoneNumber' => $request->phoneNumber,
+                'address' => $request->address,
+            ]);
+        }
 
         Order::create([
             'customerId' => $customer->customerId,
@@ -142,7 +162,7 @@ class CustomerController extends Controller
         for ($x = 1; $x <= $request->numberTable; $x++) {
             $models[] = [
                 'nameTable' => $x,
-                'status' => "free"
+                'status' => "Free"
             ];
         }
 

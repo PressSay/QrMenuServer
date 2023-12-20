@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class CustomerDishCrossRef extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     public $timestamps = false;
 
@@ -32,5 +32,10 @@ class CustomerDishCrossRef extends Model
     public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class, 'customerId', 'customerId');
+    }
+
+    public function reviewDish(): HasOne
+    {
+        return $this->hasOne(ReviewDishCrossRef::class, ['customerId', 'dishId'], ['customerId', 'dishId']);
     }
 }
