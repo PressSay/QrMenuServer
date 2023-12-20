@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ReviewDish extends Model
 {
-    use HasFactory, softDeletes;
+    use HasFactory, SoftDeletes;
 
     public $timestamps = false;
     public $incrementing = false;
@@ -20,11 +21,11 @@ class ReviewDish extends Model
         'star'
     ];
 
-    protected $primaryKey = ['reviewId', 'dishId'];
+    protected $primaryKey = ['customerId', 'dishId'];
 
 
     public function customerDishCrossRef(): BelongsTo
     {
-        return $this->belongsTo(customerDishCrossRef::class, ['reviewId', 'dishId'], ['reviewId', 'dishId']);
+        return $this->belongsTo(customerDishCrossRef::class, ['customerId', 'dishId'], ['customerId', 'dishId']);
     }
 }
