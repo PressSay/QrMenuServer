@@ -108,9 +108,6 @@ class CustomerController extends Controller
             // 'created' => 'required',
             // 'codeStaff' => 'required',
         ]);
-        
-        OrderNotification::dispatch();
-        return "hi";
 
         $codeStaff = env('CODE_STAFF');
 
@@ -149,12 +146,9 @@ class CustomerController extends Controller
 
         $this->saveDishes($request->dishes, $customer);
         
-        if ($customer && $request->tableId != 0) {
+        if ($customer && $request->tableId != 0)
             OrderNotification::dispatch($customer);
-            return "success";
-        } else {
-            return "fail";
-        }
+        return "success";
     }
     public function createTable(Request $request)
     {

@@ -38,15 +38,10 @@ return [
             'options' => [
                 'cluster' => env('PUSHER_APP_CLUSTER'),
                 'encrypted' => false,
+                'useTLS' => false,
                 'host' => env('PUSHER_HOST') ?: 'api-'.env('PUSHER_APP_CLUSTER', 'mt1').'.pusher.com',
                 'port' => 6001,
                 'scheme' => 'http',
-                'useTLS' => false,
-                // 'debug' => true,
-                // 'curl_options' => [
-                //     CURLOPT_SSL_VERIFYHOST => 0,
-                //     CURLOPT_SSL_VERIFYPEER => 0,
-                // ],
             ],
         ],
 

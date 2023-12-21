@@ -31,6 +31,7 @@ async function main() {
     const minusBtn = document.querySelectorAll('.btn-minus');
     const bgMinus = document.querySelectorAll('.bg-minus');
     const iconMinus = document.querySelectorAll('.icon-minus');
+    
 
     const quantity = document.querySelectorAll('.quantity');
     const urlParams = new URLSearchParams(window.location.search);
@@ -42,6 +43,8 @@ async function main() {
 
     const searchText = document.querySelector('#search-input-text');
     const searchBtn = document.querySelector('#search-btn');
+
+    // bgMinus.classList.remove("bg-error");
 
     searchBtn.addEventListener("click", (_) => {
         const nameTxt = searchText.value.replace(" ", "+");

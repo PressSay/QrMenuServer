@@ -23,9 +23,4 @@ class ReviewDish extends Model
 
     protected $primaryKey = ['customerId', 'dishId'];
 
-
-    public function customerDishCrossRef(): BelongsTo
-    {
-        return $this->belongsTo(customerDishCrossRef::class, ['customerId', 'dishId'], ['customerId', 'dishId']);
-    }
 }

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -28,7 +29,7 @@ class Customer extends Model
 
     public function reviewBill(): HasOne
     {
-        return $this->hasOne(ReviewCustomerCrossRef::class, 'customerId', 'customerId');
+        return $this->hasOne(ReviewBill::class, 'customerId', 'customerId');
     }
 
     public function customerDishCrossRefs(): HasMany

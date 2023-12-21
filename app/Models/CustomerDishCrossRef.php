@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\ReviewDish;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -34,8 +35,4 @@ class CustomerDishCrossRef extends Model
         return $this->belongsTo(Customer::class, 'customerId', 'customerId');
     }
 
-    public function reviewDish(): HasOne
-    {
-        return $this->hasOne(ReviewDishCrossRef::class, ['customerId', 'dishId'], ['customerId', 'dishId']);
-    }
 }
