@@ -22,9 +22,9 @@ Route::get('/', function (Request $request) {
     $tableId = $request->tableOrder;
     $categoryId = $request->categoryId;
     $name = $request->name;
-    App\Models\Category::findOrFail($categoryId);
+    $category = App\Models\Category::find($categoryId);
 
-    if (is_numeric($tableId) && $tableId > 0 && $tableId < DB::table('tableOrder')->count()) {
+    if (is_numeric($tableId) && $tableId > 0 && $tableId < DB::table('tableOrder')->count() && $category) {
         $dishBuilder = App\Models\Dish::Where('categoryId', $categoryId);
         if ($name) {
             $dishBuilder->where('name', 'like', '%' . $name . '%');
@@ -32,7 +32,8 @@ Route::get('/', function (Request $request) {
         $arrDish = $dishBuilder->get();
         return view('menu', ['tableId' => $tableId, 'categoryId' => $categoryId, 'dishes' => $arrDish]);
     }
-    abort(404);
+    
+    return view('home');
 })->name('menus');
 
 

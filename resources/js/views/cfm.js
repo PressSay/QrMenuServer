@@ -97,7 +97,7 @@ async function renderCfmBtn() {
 
                 const xOrderCfm = xOrderCfmFun(curDish.name, price, quantity, srcImgDsh);
 
-                total += cost;
+                total += (cost * quantity);
                 if (offsetCol == 3) {
                     xColCfmHtml = xColCfmHtmlFun();
                     xRowCfmHtml.append(xColCfmHtml);

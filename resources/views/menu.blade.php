@@ -1,12 +1,7 @@
-<!doctype html>
-<html>
-
-<x-header />
-
-<body style="background-color: #FDFDF5;">
+<x-qrmenu>
     <x-nav-talwin close="{{ __('nav.close') }}" search="{{ __('nav.search') }}" home="{{ __('nav.home') }}"
-        register="{{ __('nav.register') }}" category="{{ __('nav.category') }}" tableId="{{ $tableId }}"
-        categoryId="{{ $categoryId }}" />
+            register="{{ __('nav.register') }}" category="{{ __('nav.category') }}" tableId="{{ $tableId }}"
+            categoryId="{{ $categoryId }}" />
 
     @for ($i = 0; $i < $dishes->count(); $i += 6)
         @if ($i + 6 < $dishes->count())
@@ -72,6 +67,4 @@
     @endfor
 
     <x-pay-btn order="Order" genre="Category" tableId="{{ $tableId }}" categoryId="{{ $categoryId }}" />
-</body>
-
-</html>
+</x-qrmenu>
