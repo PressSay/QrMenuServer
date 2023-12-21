@@ -11,11 +11,17 @@ function funQuantity(qHtml, opt) {
     }
 }
 
-function chgeStusBgMinus(bgMinusHtml, quantity) {
+function chgeStusBgMinus(iconMinusHtml, bgMinusHtml, quantity) {
     if (quantity > 0) {
-        bgMinusHtml.style.background = "#FFDAD6";
+        // bgMinusHtml.style.background = "#FFDAD6";
+        bgMinusHtml.classList.add("bg-error");
+        iconMinusHtml.classList.remove("fill-base-content");
+        iconMinusHtml.classList.add("fill-error-content");
     } else {
-        bgMinusHtml.style.background = "white";
+        bgMinusHtml.classList.remove("bg-error");
+        iconMinusHtml.classList.remove("fill-error-content");
+        iconMinusHtml.classList.add("fill-base-content");
+        // bgMinusHtml.style.background = "white";
     }
 }
 
@@ -24,6 +30,7 @@ async function main() {
     const plusBtn = document.querySelectorAll('.btn-plus');
     const minusBtn = document.querySelectorAll('.btn-minus');
     const bgMinus = document.querySelectorAll('.bg-minus');
+    const iconMinus = document.querySelectorAll('.icon-minus');
 
     const quantity = document.querySelectorAll('.quantity');
     const urlParams = new URLSearchParams(window.location.search);
@@ -57,20 +64,20 @@ async function main() {
                 console.log(localStorage.getItem('dish_' + ele.dishId));
                 const curQD = parseInt(localStorage.getItem('dish_' + ele.dishId));
                 quantity[k].innerText = (curQD < 10) ? `0${curQD}` : curQD;
-                chgeStusBgMinus(bgMinus[k], curQD);
+                chgeStusBgMinus(iconMinus[k], bgMinus[k], curQD);
             }
 
             plusBtn[k].addEventListener("click", (_) => {
                 funQuantity(quantity[k], '+');
                 localStorage.setItem('dish_' + ele.dishId, quantity[k].innerText);
                 const curQDFun = parseInt(quantity[k].innerText);
-                chgeStusBgMinus(bgMinus[k], curQDFun);
+                chgeStusBgMinus(iconMinus[k], bgMinus[k], curQDFun);
             });
             minusBtn[k].addEventListener("click", (_) => {
                 funQuantity(quantity[k], '-');
                 localStorage.setItem('dish_' + ele.dishId, quantity[k].innerText);
                 const curQDFun = parseInt(quantity[k].innerText);
-                chgeStusBgMinus(bgMinus[k], curQDFun);
+                chgeStusBgMinus(iconMinus[k], bgMinus[k], curQDFun);
             })
         }
     } catch (err) {

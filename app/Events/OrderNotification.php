@@ -17,15 +17,15 @@ class OrderNotification implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    protected $customer;
+    // protected $customer;
 
     /**
      * Create a new event instance.
      */
-    public function __construct($customer)
+    public function __construct()
     {
         // careful $this->customerId not $this->$customerId
-        $this->customer = $customer;
+        // $this->customer = $customer;
     }
 
     /**
@@ -47,16 +47,17 @@ class OrderNotification implements ShouldBroadcast
 
     public function broadcastWith(): array
     {
-        $model = Customer::find($this->customer->customerId);
-        $customerDishCrossRef = CustomerDishCrossRef::where('customerId', '=', $model->customerId)->get();
-        $order = Order::where('customerId', '=', $model->customerId)->first();
-        $model->orderId = $order->customerId;
-        $model->status = $order->status;
-        $model->promotion = $order->promotion;
-        $model->payments = $order->payments;
-        $model->tableId = $order->nameTable;
-        $model->customerDishCrossRefs = $customerDishCrossRef;
+        // $model = Customer::find($this->customer->customerId);
+        // $customerDishCrossRef = CustomerDishCrossRef::where('customerId', '=', $model->customerId)->get();
+        // $order = Order::where('customerId', '=', $model->customerId)->first();
+        // $model->orderId = $order->customerId;
+        // $model->status = $order->status;
+        // $model->promotion = $order->promotion;
+        // $model->payments = $order->payments;
+        // $model->tableId = $order->nameTable;
+        // $model->customerDishCrossRefs = $customerDishCrossRef;
         
-        return $model->toArray();
+        // return $model->toArray();
+        return ["hi"];
     }
 }

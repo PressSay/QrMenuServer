@@ -1,13 +1,11 @@
 <!doctype html>
-<html>
+<html data-theme="cupcake">
 
 <x-header />
 
-<body style="background-color: #FDFDF5;">
-    
-
+<body >
     {{ $slot }}
-
+    @livewireScripts
 </body>
 
 </html>
