@@ -12,10 +12,10 @@
     <div class="flex h-11 border-r-2 border-b-2 border-l-2 justify-between border-base-content">
         <div class="flex justify-content items-center">
             <div class="w-24"></div>
-            <p class="w-24 mx-1.5 h-fit text-center rounded-tr-md rounded-bl-md font-bold text-sm">
+            <p class="w-24 mx-1.5 h-fit text-center rounded-tr-md rounded-bl-md font-bold text-sm bg-base-300">
                 {{ $price }}
             </p>
-            <p class="w-16 h-fit text-center rounded-tr-md rounded-bl-md font-bold text-sm">
+            <p class="w-16 h-fit text-center rounded-tr-md rounded-bl-md font-bold text-sm bg-base-300">
                 {{ $quantity }}
             </p>
         </div>

@@ -1,5 +1,5 @@
-<x-qrmenu>
-    <x-nav-talwin close="{{ __('nav.close') }}" search="{{ __('nav.search') }}" home="{{ __('nav.home') }}"
+<x-qrmenu-layout>
+    <x-nav-talwin-off close="{{ __('nav.close') }}" search="{{ __('nav.search') }}" home="{{ __('nav.home') }}"
         register="{{ __('nav.register') }}" category="{{ __('nav.category') }}" tableId="{{ $tableId }}"
         categoryId="{{ $categoryId }}" />
 
@@ -61,4 +61,4 @@
     <x-pay-btn order="Order" genre="Menu" tableId="{{ $tableId }}" categoryId="{{ $categoryId }}"
         pageGenre="{{ true }}" />
 
-</x-qrmenu>
+</x-qrmenu-layout>

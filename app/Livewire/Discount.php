@@ -4,10 +4,10 @@ namespace App\Livewire;
 
 use Livewire\Component;
 
-class GenreOnl extends Component
+class Discount extends Component
 {
     public function render()
     {
-        return view('livewire.genre-onl');
+        return view('livewire.discount');
     }
 }

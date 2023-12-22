@@ -1,3 +1,3 @@
-<x-qrmenu>
-    <livewire:counter /> 
-</x-qrmenu>
+<x-qrmenu-layout>
+    <livewire:menu/> 
+</x-qrmenu-layout>

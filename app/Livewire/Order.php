@@ -4,10 +4,10 @@ namespace App\Livewire;
 
 use Livewire\Component;
 
-class DiscountQr extends Component
+class Order extends Component
 {
     public function render()
     {
-        return view('livewire.discount-qr');
+        return view('livewire.order');
     }
 }

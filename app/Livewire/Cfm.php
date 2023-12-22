@@ -4,10 +4,11 @@ namespace App\Livewire;
 
 use Livewire\Component;
 
-class CfmOnl extends Component
+class Cfm extends Component
 {
+    
     public function render()
     {
-        return view('livewire.cfm-onl');
+        return view('livewire.cfm');
     }
 }

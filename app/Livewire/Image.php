@@ -4,10 +4,10 @@ namespace App\Livewire;
 
 use Livewire\Component;
 
-class OrderListOnl extends Component
+class Image extends Component
 {
     public function render()
     {
-        return view('livewire.order-list-onl');
+        return view('livewire.image');
     }
 }

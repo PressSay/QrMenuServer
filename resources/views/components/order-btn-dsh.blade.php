@@ -4,7 +4,7 @@
     {{ $attributes->merge(['class' => 'sm:mx-' . $mx]) }}>
     <div class="absolute h-full w-full">
         <div class="w-full h-1/2 rounded-tr-xlarge bg-base-300"{{--  style="background-color: #DAE7CA;" --}}></div>
-        <div class="w-full h-1/2 rounded-bl-xlarge bg-minus bg-error" {{-- style="background-color: white;" --}}></div>
+        <div class="w-full h-1/2 rounded-bl-xlarge bg-minus {{-- bg-error --}}" {{-- style="background-color: white;" --}}></div>
     </div>
     <div class="absolute flex flex-col">
         <div class="flex mb-3">
