@@ -15,9 +15,9 @@ class Menu extends Component
     // 1 menu, 2 cfm, 3 discount, 4 genre, 5 imageCode, 6 orderList, 7 selectCode, 8 review, 9 category
     public $layout = 7;
     public $zIndexSecondLayout = "z-0";
-    public $isInvisibleHome = "visible";
-    public $isInvisibleApp = "hidden";
-    
+    public $isInvisibleHome = "invisible";
+    public $isInvisibleApp = "block";
+
     // public $arrQuantity = [0 => 0, 1 => 0, 2 => 0, 3 => 0, 4 => 0];
 
     public $arrQuantity = [];
@@ -27,6 +27,8 @@ class Menu extends Component
 
     #[Url]
     public $categoryId = 0;
+
+    public $customerId;
 
 
     public function render()
@@ -57,7 +59,7 @@ class Menu extends Component
 
     #[On('minusFunc')]
     public function minusFunc($index)
-    {   
+    {
         if ($this->arrQuantity[$index] > 0)
             $this->arrQuantity[$index] -= 1;
     }
@@ -93,6 +95,13 @@ class Menu extends Component
     public function backToImgQr()
     {
         $this->layout = 5;
+    }
+
+    #[On('useCode')]
+    public function useCode($index)
+    {
+        $this->layout = 2;
+        $this->customerId = $index;
     }
 
     public function chooseMenu()

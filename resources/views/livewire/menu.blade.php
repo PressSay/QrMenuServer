@@ -37,7 +37,7 @@
                         </div>
                         <div class="flex flex-col mx-2 sticky right-0 left-0 bottom-0">
                             <div class="my-1 flex justify-center">
-                                {{ $categoryId }}
+                                {{ $customerId }}
                             </div>
                             <div class="flex justify-evenly items-center mx-1.5 ">
                                 <button wire:click="chooseMenu"

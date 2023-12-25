@@ -1,7 +1,7 @@
 @props(['customerId' => '0', 'status' => 'status'])
 
-<div class="mx-2 w-full sm:w-96 border flex rounded">
-    <div class="w-1/5 flex justify-center items-center h-full">
+<div class="my-2 w-11/12 sm:w-96 border flex rounded justify-center items-center">
+    <div class="w-1/5 flex justify-center items-center">
         <svg xmlns="http://www.w3.org/2000/svg" height="32" viewBox="0 -960 960 960" width="32">
             <path class="fill-base-content"
                 d="M520-120v-80h80v80h-80Zm-80-80v-200h80v200h-80Zm320-120v-160h80v160h-80Zm-80-160v-80h80v80h-80Zm-480
@@ -12,9 +12,9 @@
         </svg>
     </div>
     <div class="w-3/5 h-full flex justify-center items-center border-l">
-        <p class="text-base">{{ $status }}</p>
+        <p class="text-base truncate px-1.5">{{ $status }}</p>
     </div>
-    <div class="w-1/5 h-full flex justify-center items-center btn rounded">
+    <div class="w-1/5 h-full flex justify-center items-center btn rounded" wire:click="$dispatch('useCode', { index: {{ $customerId }} })" >
         {{__('use_code')}}
     </div>
 </div>
