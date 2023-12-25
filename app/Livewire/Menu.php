@@ -13,7 +13,7 @@ use App\Models\Menu as MenuModel;
 class Menu extends Component
 {
     // 1 menu, 2 cfm, 3 discount, 4 genre, 5 imageCode, 6 orderList, 7 selectCode, 8 review, 9 category
-    public $layout = 1;
+    public $layout = 5;
     public $zIndexSecondLayout = "z-0";
     public $isInvisibleHome = "visible";
     public $isInvisibleApp = "hidden";
@@ -77,6 +77,18 @@ class Menu extends Component
         $this->layout = 1;
     }
 
+    #[On('trashCfm')]
+    public function tranhCfm($index)
+    {
+        $this->arrQuantity[$index] = 0;
+    }
+
+    #[On('backToCfm')]
+    public function backToCfm()
+    {
+        $this->layout = 2;
+    }
+
     public function chooseMenu()
     {
         $this->zIndexSecondLayout = "z-10";
@@ -125,6 +137,7 @@ class Menu extends Component
         $this->layout = 6;
     }
 
+    #[On('chooseSelectCode')]
     public function chooseSelectCode()
     {
         $this->zIndexSecondLayout = "z-10";

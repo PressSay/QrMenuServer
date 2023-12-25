@@ -14,7 +14,7 @@
                                             echo '<div class="flex xl:flex-row flex-col justify-evenly items-center w-full">';
                                         @endphp
                                     @endif
-                                    <x-order-cfm-dsh mx=0 title="Tên món ăn" price="18,000đ" quantity="012" />
+                                    <x-order-cfm-dsh mx=0 title="Tên món ăn" price="18,000đ" quantity="012" onClick="$dispatch('trashCfm', { index: {{ $key }} })"/>
                                     @if ($columnRun == 1)
                                         @php
                                             echo '</div>';
@@ -39,14 +39,14 @@
                             <div class="my-1 flex justify-center">
                                 {{ $categoryId }}
                             </div>
-                            <div class="flex justify-evenly items-center ">
+                            <div class="flex justify-evenly items-center mx-1.5 ">
                                 <button wire:click="chooseMenu"
                                     class="btn w-1/3 mx-1 my-3 rounded shadow-xl text-xs 
                                 sm:text-sm md:text-base border-2 btn-outline btn-base-content bg-base-100">{{ __('Menu') }}</button>
-                                <button wire:click="chooseMenu"
+                                <button wire:click="chooseImageCode"
                                     class="btn w-1/3 mx-1 my-3 rounded shadow-xl text-xs 
                                 sm:text-sm md:text-base border-2 btn-outline btn-base-content bg-base-100">{{ __('QrCode') }}</button>
-                                <button wire:click=""
+                                <button wire:click="chooseMenu"
                                     class="pay-cfm btn w-1/3 mx-1 my-3 rounded shadow-xl text-xs 
                                 sm:text-sm md:text-base border-2 btn-outline btn-base-content bg-base-100">{{ __('order') }}</button>
                             </div>

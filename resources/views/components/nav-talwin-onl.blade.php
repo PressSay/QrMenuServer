@@ -28,7 +28,7 @@
                 @endif
             </label>
             <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-                <li><a wire:click="home">{{ $home }}</a>
+                <li><a wire:click="$dispatch('home')">{{ $home }}</a>
                 </li>
                 @if (Auth::check())
                     <li><a href="/profile">{{ $auth }}</a></li>
@@ -40,7 +40,7 @@
         </div>
     </div>
     <div class="navbar-center">
-        <a class="btn btn-ghost text-xl" wire:click="home">
+        <a class="btn btn-ghost text-xl" wire:click="$dispatch('home')">
             <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24">
                 <path class="w-16 h-16 fill-current text-gray-500 fill-base-content"
                     d="M220-180h150v-250h220v250h150v-390L480-765 220-570v390Zm-60 60v-480l320-240 320 240v480H530v-250H430v250H160Zm320-353Z" />

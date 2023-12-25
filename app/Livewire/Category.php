@@ -18,12 +18,6 @@ class Category extends Component
         $menuId = ($menuModel) ? $menuModel->menuId : 0;
         $this->categories = CategoryModel::offset($this->page - 1)->limit(6)->get();
     }
-
-    public function home()
-    {
-        $this->dispatch('home');
-    }
-
     
     public function render()
     {
