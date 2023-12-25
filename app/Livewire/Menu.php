@@ -13,7 +13,7 @@ use App\Models\Menu as MenuModel;
 class Menu extends Component
 {
     // 1 menu, 2 cfm, 3 discount, 4 genre, 5 imageCode, 6 orderList, 7 selectCode, 8 review, 9 category
-    public $layout = 5;
+    public $layout = 7;
     public $zIndexSecondLayout = "z-0";
     public $isInvisibleHome = "visible";
     public $isInvisibleApp = "hidden";
@@ -87,6 +87,12 @@ class Menu extends Component
     public function backToCfm()
     {
         $this->layout = 2;
+    }
+
+    #[On('backToImgQr')]
+    public function backToImgQr()
+    {
+        $this->layout = 5;
     }
 
     public function chooseMenu()
