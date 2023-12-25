@@ -25,7 +25,8 @@ export default {
             'full': '9999px',
             'large': '12px',
             'xlarge': '24px'
-          }
+        }
+        
     },
 
     plugins: [forms, require("daisyui")],

@@ -5,10 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Customer;
 use App\Models\Dish;
 use Illuminate\Http\Request;
-use App\Models\ReviewDishCrossRef;
 use App\Models\ReviewBill;
 use App\Models\ReviewDish;
-use App\Models\ReviewCustomerCrossRef;
 
 class ReviewController extends Controller
 {
@@ -35,7 +33,7 @@ class ReviewController extends Controller
 
     public function findOneRevDish(string $dishId, string $customerId, Request $request)
     {
-        $customer = CustomerDishCrossRef::where('dishId', '=', $dishId)->where('customerId', '=', $customerId)
+        $customer = ReviewDish::where('dishId', '=', $dishId)->where('customerId', '=', $customerId)
             ->where('star','<>', 'NULL')->where('description', '<>', 'NULL')->first();
         if (!$customer) {
             abort(404, 'review does not exist');
@@ -125,7 +123,7 @@ class ReviewController extends Controller
             'isGood' => 'required',
         ]);
 
-        $reviewBuilder = CustomerDishCrossRef::where('dishId', '=', $dishId)->where('customerId', '=', $customerId);
+        $reviewBuilder = ReviewDish::where('dishId', '=', $dishId)->where('customerId', '=', $customerId);
         $review = $reviewBuilder->first();
 
         if (!$review) {

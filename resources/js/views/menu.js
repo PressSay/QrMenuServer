@@ -38,7 +38,7 @@ async function main() {
     const categoryId = parseInt(urlParams.get('categoryId'));
     const tableOrder = parseInt(urlParams.get('tableOrder'));
     const searchName = urlParams.get('name');
-    const pageNormal = !(categoryId && tableOrder);
+    const pageNormal = !(!isNaN(categoryId) && !isNaN(tableOrder));
     
 
     const searchText = document.querySelector('#search-input-text');
@@ -46,45 +46,54 @@ async function main() {
 
     // bgMinus.classList.remove("bg-error");
 
-    searchBtn.addEventListener("click", (_) => {
-        const nameTxt = searchText.value.replace(" ", "+");
-        if (pageNormal) {
-            location.href = "/?name=" + nameTxt;
-        }
-        else {
-            location.href = "/?categoryId=" + categoryId + "&tableOrder=" + tableOrder + "&name=" + nameTxt;
-        }
-    });
-
-    try {
-        const arrDish = (searchName) ?
-            await dishService.getAllByName(searchName) : await dishService.getAllByCategoryId(categoryId);
-
-        for (let k in arrDish) {
-            const ele = arrDish[k];
-            dishImg[k].src = "/" + ele.imageDish.source;
-            if (localStorage.getItem('dish_' + ele.dishId)) {
-                console.log(localStorage.getItem('dish_' + ele.dishId));
-                const curQD = parseInt(localStorage.getItem('dish_' + ele.dishId));
-                quantity[k].innerText = (curQD < 10) ? `0${curQD}` : curQD;
-                chgeStusBgMinus(iconMinus[k], bgMinus[k], curQD);
+    if (searchBtn) {
+        searchBtn.addEventListener("click", (_) => {
+            const nameTxt = searchText.value.replace(" ", "+");
+            const localHref = location.href;
+            if (pageNormal) {
+                if (localHref.includes("?")) {
+                    location.href += "&name=" + nameTxt;
+                } else {
+                    location.href += "?name=" + nameTxt;
+                }
             }
+            else {
+                location.href = "/?categoryId=" + categoryId + "&tableOrder=" + tableOrder + "&name=" + nameTxt;
+            }
+        });
+    }
 
-            plusBtn[k].addEventListener("click", (_) => {
-                funQuantity(quantity[k], '+');
-                localStorage.setItem('dish_' + ele.dishId, quantity[k].innerText);
-                const curQDFun = parseInt(quantity[k].innerText);
-                chgeStusBgMinus(iconMinus[k], bgMinus[k], curQDFun);
-            });
-            minusBtn[k].addEventListener("click", (_) => {
-                funQuantity(quantity[k], '-');
-                localStorage.setItem('dish_' + ele.dishId, quantity[k].innerText);
-                const curQDFun = parseInt(quantity[k].innerText);
-                chgeStusBgMinus(iconMinus[k], bgMinus[k], curQDFun);
-            })
+    if (!pageNormal) {
+        try {
+            const arrDish = (searchName) ?
+                await dishService.getAllByName(searchName) : await dishService.getAllByCategoryId(categoryId);
+
+            for (let k in arrDish) {
+                const ele = arrDish[k];
+                dishImg[k].src = "/" + ele.imageDish.source;
+                if (localStorage.getItem('dish_' + ele.dishId)) {
+                    console.log(localStorage.getItem('dish_' + ele.dishId));
+                    const curQD = parseInt(localStorage.getItem('dish_' + ele.dishId));
+                    quantity[k].innerText = (curQD < 10) ? `0${curQD}` : curQD;
+                    chgeStusBgMinus(iconMinus[k], bgMinus[k], curQD);
+                }
+
+                plusBtn[k].addEventListener("click", (_) => {
+                    funQuantity(quantity[k], '+');
+                    localStorage.setItem('dish_' + ele.dishId, quantity[k].innerText);
+                    const curQDFun = parseInt(quantity[k].innerText);
+                    chgeStusBgMinus(iconMinus[k], bgMinus[k], curQDFun);
+                });
+                minusBtn[k].addEventListener("click", (_) => {
+                    funQuantity(quantity[k], '-');
+                    localStorage.setItem('dish_' + ele.dishId, quantity[k].innerText);
+                    const curQDFun = parseInt(quantity[k].innerText);
+                    chgeStusBgMinus(iconMinus[k], bgMinus[k], curQDFun);
+                })
+            }
+        } catch (err) {
+            console.log(err);
         }
-    } catch (err) {
-        console.log(err);
     }
 }
 

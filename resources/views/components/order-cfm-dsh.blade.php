@@ -1,6 +1,6 @@
 @props(['title', 'price', 'quantity', 'mx'])
 
-<div class="flex flex-col relative sm:w-96 mx-2 shadow-xl my-3" {{ $attributes->merge(['class' => 'sm:mx-'.$mx]) }}>
+<div class="flex flex-col relative sm:w-96 mx-2 shadow-md my-3" {{ $attributes->merge(['class' => 'sm:mx-'.$mx]) }}>
     <img class="absolute w-24 rounded-tr-xlarge rounded-bl-xlarge border-2"
         src="/image-dish/default.jpg" />
     <div class="flex rounded-tr-xlarge border-2 border-base-content">

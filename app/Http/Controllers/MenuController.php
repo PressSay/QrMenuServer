@@ -6,11 +6,10 @@ namespace App\Http\Controllers;
 use App\Models\Dish;
 use App\Models\Menu;
 use App\Models\Image;
-use App\Models\Review;
 use App\Models\Category;
 use App\Models\ImageDish;
+use App\Models\ReviewDish;
 use Illuminate\Http\Request;
-use App\Models\ReviewDishCrossRef;
 
 class MenuController extends Controller
 {
@@ -96,14 +95,13 @@ class MenuController extends Controller
         $imageBuilder = Image::where('imageId', '<>', 1);
         $imageBuilder = $imageBuilder->whereIn('imageId', $imageDishBuilder->pluck('imageId'));
 
-        $reviewDishCrossRefBuilder = ReviewDishCrossRef::whereIn('dishId', $dishBuilder->pluck('dishId'));
-        $reviewBuilder = Review::whereIn('reviewId', $reviewDishCrossRefBuilder->pluck('reviewId'));
+        $reviewDishBuilder = ReviewDish::whereIn('dishId', $dishBuilder->pluck('dishId'));
         
         $menuBuilder->delete();
         $categoryBuilder->delete();
         $dishBuilder->delete();
         $imageBuilder->delete();
-        $reviewBuilder->delete();
+        $reviewDishBuilder->delete();
 
         return "success";
     }
