@@ -10,13 +10,21 @@ use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
 use App\Models\Menu as MenuModel;
 
+
 class Menu extends Component
 {
     // 1 menu, 2 cfm, 3 discount, 4 genre, 5 imageCode, 6 orderList, 7 selectCode, 8 review, 9 category
-    public $layout = 7;
+    public $layout = 1;
+    public $arrLayout = [];
+    public $indexLayout = 0;
+
     public $zIndexSecondLayout = "z-0";
-    public $isInvisibleHome = "invisible";
-    public $isInvisibleApp = "block";
+    // public $isInvisibleHome = "invisible";
+    // public $isInvisibleApp = "block";
+
+    public $isInvisibleHome = "visible";
+    public $isInvisibleApp = "hidden";
+
 
     // public $arrQuantity = [0 => 0, 1 => 0, 2 => 0, 3 => 0, 4 => 0];
 
@@ -30,6 +38,21 @@ class Menu extends Component
 
     public $customerId;
 
+
+    private function pushToArrLayout($layout)
+    {
+        $this->arrLayout[$this->indexLayout] = $layout;
+        $this->indexLayout++;
+    }
+
+    private function popFromArrLayout()
+    {
+        if ($this->indexLayout > 0) {
+            $this->indexLayout--;
+            return $this->arrLayout[$this->indexLayout];
+        }
+        return 1;
+    }
 
     public function render()
     {
@@ -54,6 +77,9 @@ class Menu extends Component
         $this->zIndexSecondLayout = "z-0";
         $this->isInvisibleHome = "visible";
         $this->isInvisibleApp = "hidden";
+        unset($this->arrLayout);
+        $this->arrLayout = [];
+        $this->indexLayout = 0;
         $this->layout = 1;
     }
 
@@ -85,12 +111,6 @@ class Menu extends Component
         $this->arrQuantity[$index] = 0;
     }
 
-    #[On('backToCfm')]
-    public function backToCfm()
-    {
-        $this->layout = 2;
-    }
-
     #[On('backToImgQr')]
     public function backToImgQr()
     {
@@ -100,81 +120,85 @@ class Menu extends Component
     #[On('useCode')]
     public function useCode($index)
     {
-        $this->layout = 2;
+        $this->chooseCfm();
         $this->customerId = $index;
     }
 
-    public function chooseMenu()
+    #[On('backPrevious')]
+    public function backPrevious()
+    {
+        $this->layout = $this->popFromArrLayout();
+    }
+
+    private function chooseLayout()
     {
         $this->zIndexSecondLayout = "z-10";
         $this->isInvisibleHome = "invisible";
         $this->isInvisibleApp = "block";
+        $this->pushToArrLayout($this->layout);
+    }
+
+    public function chooseMenu()
+    {
+        $this->chooseLayout();
         $this->layout = 1;
     }
 
     public function chooseCfm()
     {
-        $this->zIndexSecondLayout = "z-10";
-        $this->isInvisibleHome = "invisible";
-        $this->isInvisibleApp = "block";
+        $this->chooseLayout();
         $this->layout = 2;
     }
 
     public function chooseDiscount()
     {
-        $this->zIndexSecondLayout = "z-10";
-        $this->isInvisibleHome = "invisible";
-        $this->isInvisibleApp = "block";
+        $this->chooseLayout();
         $this->layout = 3;
     }
 
     public function chooseGenre()
     {
-        $this->zIndexSecondLayout = "z-10";
-        $this->isInvisibleHome = "invisible";
-        $this->isInvisibleApp = "block";
+        $this->chooseLayout();
         $this->layout = 4;
     }
 
     public function chooseImageCode()
     {
-        $this->zIndexSecondLayout = "z-10";
-        $this->isInvisibleHome = "invisible";
-        $this->isInvisibleApp = "block";
+        $this->chooseLayout();
         $this->layout = 5;
     }
 
     public function chooseOrderList()
     {
-        $this->zIndexSecondLayout = "z-10";
-        $this->isInvisibleHome = "invisible";
-        $this->isInvisibleApp = "block";
+        $this->chooseLayout();
         $this->layout = 6;
     }
 
     #[On('chooseSelectCode')]
     public function chooseSelectCode()
     {
-        $this->zIndexSecondLayout = "z-10";
-        $this->isInvisibleHome = "invisible";
-        $this->isInvisibleApp = "block";
+        $this->chooseLayout();
         $this->layout = 7;
     }
 
-    public function  chooseReview()
+    public function chooseReview()
     {
-        $this->zIndexSecondLayout = "z-10";
-        $this->isInvisibleHome = "invisible";
-        $this->isInvisibleApp = "block";
+        $this->chooseLayout();
         $this->layout = 8;
     }
 
     public function chooseCategory()
     {
-        $this->zIndexSecondLayout = "z-10";
-        $this->isInvisibleHome = "invisible";
-        $this->isInvisibleApp = "block";
+        $this->chooseLayout();
         $this->layout = 9;
     }
 
 }
+
+class Node
+{
+    public $data;
+    public $next;
+    public $previous;
+}
+

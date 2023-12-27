@@ -30,6 +30,6 @@
     </div>
 
     <div class="flex flex-col mt-16 mb-6 items-center mx-3">
-        <button class="btn w-full sm:w-80 h-14" wire:click="$dispatch('backToImgQr')">{{ __('back') }}</button>
+        <button class="btn w-full sm:w-80 h-14" wire:click="$dispatch('backPrevious')">{{ __('back') }}</button>
     </div>
 </div>

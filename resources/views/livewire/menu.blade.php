@@ -1,39 +1,64 @@
 <div class="container mx-auto">
     <div class="md:flex md:flex-row-reverse relative">
-        <div
+        <div id="app-container"
             class="w-full md:w-1/2 xl:w-2/3 {{ $zIndexSecondLayout }} md:z-0 md:mx-1.5 md:relative absolute top-0 bg-base-100 h-screen {{ $isInvisibleApp }} md:block">
             @switch($layout)
                 @case(2)
-                    <div class="block relative w-full ">
+                    <div class="block relative w-full">
                         <x-nav-talwin-onl home="{{ __('nav.home') }}" register="{{ __('nav.register') }}" />
-                        <div class="mb-8 flex flex-col items-center w-full" style="overflow: auto; height: fit;">
-                            @foreach ($arrQuantity as $key => $item)
-                                @if ($item > 0)
-                                    @if ($columnRun == 0)
+                        @php
+                            $total = 0;
+                        @endphp
+                        <div class="flex justify-center">
+                            <div class="mb-8 flex flex-col items-center w-11/12" style="overflow: auto; height: fit;">
+                                @foreach ($arrQuantity as $key => $item)
+                                    @if ($item > 0)
+                                        @if ($columnRun == 0)
+                                            @php
+                                                echo '<div class="flex xl:flex-row flex-col justify-evenly items-center w-full">';
+                                            @endphp
+                                        @endif
                                         @php
-                                            echo '<div class="flex xl:flex-row flex-col justify-evenly items-center w-full">';
+                                            $dish = App\Models\Dish::find($key);
+                                            $total = $total + $dish->cost * $item;
+                                        @endphp
+                                        <x-order-cfm-dsh mx=0 title="{{ $dish->name }}" price="{{ $dish->cost }}"
+                                            quantity="{{ $item }}"
+                                            onClick="$dispatch('trashCfm', { index: {{ $key }} })" />
+                                        @if ($columnRun == 1)
+                                            @php
+                                                echo '</div>';
+                                            @endphp
+                                        @endif
+                                        @php
+                                            $columnRun = ($columnRun + 1) % 2;
+                                            $hasQuantityMoreThanZero = true;
                                         @endphp
                                     @endif
-                                    <x-order-cfm-dsh mx=0 title="Tên món ăn" price="18,000đ" quantity="012" onClick="$dispatch('trashCfm', { index: {{ $key }} })"/>
-                                    @if ($columnRun == 1)
+                                    @if ($columnRun == 1 && array_key_last($arrQuantity) == $key && $hasQuantityMoreThanZero)
+                                        <div class="sm:w-96 rounded-tr-xlarge rounded-bl-xlarge relative mx-2 invisible">
+                                            <div class="hidden md:block visible"></div>
+                                        </div>
                                         @php
                                             echo '</div>';
                                         @endphp
                                     @endif
-                                    @php
-                                        $columnRun = ($columnRun + 1) % 2;
-                                        $hasQuantityMoreThanZero = true;
-                                    @endphp
-                                @endif
-                                @if ($columnRun == 1 && array_key_last($arrQuantity) == $key && $hasQuantityMoreThanZero)
-                                    <div class="sm:w-96 rounded-tr-xlarge rounded-bl-xlarge relative mx-2 invisible">
-                                        <div class="hidden md:block visible"></div>
-                                    </div>
-                                    @php
-                                        echo '</div>';
-                                    @endphp
-                                @endif
-                            @endforeach
+                                @endforeach
+                            </div>
+                        </div>
+                        <div class="flex flex-col mx-2 container mx-auto mt-6">
+                            <div class="flex">
+                                <p class="font-bold text-lg mr-1">{{ __('dish.discount') }}</p>
+                                <p class="font-bold text-lg summary">6,000đ</p>
+                            </div>
+                            <div class="flex">
+                                <p class="font-bold text-lg mr-1">{{ __('dish.tax') }}(5%): </p>
+                                <p class="font-bold text-lg summary">{{ $total * 0.05 }} đ</p>
+                            </div>
+                            <div class="flex">
+                                <p class="font-bold text-lg mr-1">{{ __('dish.total') }}</p>
+                                <p class="font-bold text-lg summary">{{ $total }}</p>
+                            </div>
                         </div>
                         <div class="flex flex-col mx-2 sticky right-0 left-0 bottom-0">
                             <div class="my-1 flex justify-center">
@@ -82,8 +107,8 @@
                     <livewire:category />
                 @break
 
-                <div class="block relative w-full ">
-                    @case(1)
+                @case(1)
+                    <div class="block relative w-full ">
                         <x-nav-talwin-onl home="{{ __('nav.home') }}" register="{{ __('nav.register') }}" />
                         <div class="mb-8 flex flex-col items-center w-full" style="overflow: auto; height: fit;">
                             @for ($i = 0; $i < $dishes->count(); $i += 2)
@@ -122,15 +147,16 @@
                                     class="pay-cfm btn w-1/2 mx-1 my-3 rounded shadow-xl text-xs sm:text-sm md:text-base border-2 btn-outline btn-base-content bg-base-100">{{ __('order') }}</button>
                             </div>
                         </div>
-                    @break
+                    </div>
+                @break
 
-                </div>
             @endswitch
+
         </div>
         <div
             class="w-full md:w-1/2 xl:w-1/3 z-0 relative absolute h-screen bg-base-100 {{ $isInvisibleHome }} md:visible">
             <div class="flex justify-between mb-2 z-10">
-                <button class="btn p-2 shadow-md">
+                <button class="btn p-2 shadow-md my-1.5 mx-1.5">
                     <svg xmlns="http://www.w3.org/2000/svg" height="34" viewBox="0 -960 960 960" width="34">
                         <path class="fill-base-content"
                             d="M160-200v-60h80v-304q0-84 49.5-150.5T420-798v-22q0-25 17.5-42.5T480-880q25 0 42.5
@@ -138,7 +164,7 @@
                                                     33-23.5 56.5T480-80ZM300-260h360v-304q0-75-52.5-127.5T480-744q-75 0-127.5 52.5T300-564v304Z" />
                     </svg>
                 </button>
-                <button class="btn p-2 shadow-md">
+                <button class="btn p-2 shadow-md my-1.5 mx-1.5">
                     <svg width="32" height="32" viewBox="0 0 32 32" fill="none"
                         xmlns="http://www.w3.org/2000/svg">
                         <path class="fill-base-content" d="M16 15C13.8 15 12 14.3 10.6 12.9C9.2 11.5 8.5 9.7 8.5 7.5C8.5 5.3 9.2 3.5

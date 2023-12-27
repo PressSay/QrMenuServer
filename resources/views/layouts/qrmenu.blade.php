@@ -1,5 +1,5 @@
 <!doctype html>
-<html data-theme="cupcake">
+<html data-theme="">
 
 <x-header />
 

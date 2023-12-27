@@ -15,6 +15,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/qrtest', function () {
+    return view('qrtest');
+});
+
 Route::get('/', function (Request $request) {
     if ($request->lang == 'vn') {
         App::setLocale('vn');
