@@ -36,7 +36,6 @@ class CustomerController extends Controller
                     'customerId' => $customer->customerId,
                     'dishId' => $dishId,
                     'amount' => $amount,
-                    'promotion' => 0
                 ]);
             }
         }
@@ -123,7 +122,7 @@ class CustomerController extends Controller
                 'code' => md5(microtime()),
                 'phoneNumber' => $request->phoneNumber,
                 'address' => $request->address,
-                'created_at' => $request->created
+                'created_at' => $request->created,
             ]);
         } else {
             $customer = Customer::create([
@@ -139,7 +138,7 @@ class CustomerController extends Controller
         Order::create([
             'customerId' => $customer->customerId,
             'status' => $request->statusOrder,
-            'promotion' => $request->promotion,
+            'promotion' => $request->promotion ?? 0,
             'payments' => $request->payments,
             'nameTable' => $request->tableId,
         ]);

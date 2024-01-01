@@ -4,10 +4,10 @@ namespace App\Livewire;
 
 use Livewire\Component;
 
-class Discount extends Component
+class Profile extends Component
 {
     public function render()
     {
-        return view('livewire.discount');
+        return view('livewire.profile');
     }
 }

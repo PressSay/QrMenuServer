@@ -24,7 +24,7 @@ class Customer extends Model
         'code',
         'phoneNumber',
         'address',
-        'created_at'
+        'created_at',
     ];
 
     public function reviewBill(): HasOne

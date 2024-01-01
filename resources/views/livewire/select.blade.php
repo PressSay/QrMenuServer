@@ -1,6 +1,6 @@
 <div>
     {{-- Care about people's approval and you will be their prisoner. --}}
-    <x-nav-talwin-onl home="{{ __('nav.home') }}" register="{{ __('nav.register') }}" />
+    <x-nav-talwin-onl home="{{ __('nav.home') }}" register="{{ __('nav.register') }}" search="true"/>
     <div class="block relative w-full mt-14">
         @foreach ($customers as $item)
             @if ($columnRun == 0)

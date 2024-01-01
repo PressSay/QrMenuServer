@@ -3,9 +3,15 @@
     <x-nav-talwin-onl home="{{ __('nav.home') }}" register="{{ __('nav.register') }}" />
     
     <div class="flex flex-col items-center h-96 mx-2" style="overflow: auto;">
-        <x-item-my-order />
-        <x-item-my-order />
-        <x-item-my-order />
+        @foreach ($customers as $customer)
+            @php
+                $order = App\Models\Order::where('customerId', $customer->customerId)->first();
+                $status = $order->status;
+                $payments = $order->payments;
+                $customerId = $order->customerId;
+            @endphp
+            <x-item-my-order status="{{ $status }}" customerId="{{ $customerId }}" payments="{{ $payments }}"/>
+        @endforeach
     </div>
 
     {{-- padding --}}

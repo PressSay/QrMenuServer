@@ -16,9 +16,11 @@ class ReviewBill extends Model
 
     protected $fillable = [
         'customerId',
+        'description',
+        'star'
     ];
 
-    protected $primaryKey = 'reviewId';
+    protected $primaryKey = 'customerId';
 
     public function customer(): BelongsTo
     {

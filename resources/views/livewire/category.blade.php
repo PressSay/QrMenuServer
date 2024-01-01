@@ -16,6 +16,10 @@
         </div>
     @endfor
     <div class="bg-base-100 mt-3 flex justify-center">
-        {{ $categories->count() }}
+        <div class="join">
+            <button class="join-item btn" wire:click="previousPage">«</button>
+            <button class="join-item btn">{{ $page }}</button>
+            <button class="join-item btn" wire:click="nextPage">»</button>
+        </div>
     </div>
 </div>

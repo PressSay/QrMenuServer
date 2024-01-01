@@ -20,7 +20,7 @@
         <button id="start-button" class="btn w-full sm:w-80 h-14 my-4" wire:click="initScan"
             onclick="initScanner({{ $notInitScannerQr }})">{{ __('init_scan_qr') }}</button>
         <button class="btn w-full sm:w-80 h-14 my-4"
-            wire:click="$dispatch('chooseSelectCode')">{{ __('use_old_qr') }}</button>
+            wire:click="$dispatch('chooseLayout', { layout : 7 })">{{ __('use_old_qr') }}</button>
         <button class="btn w-full sm:w-80 h-14 my-4">{{ __('confirm') }}</button>
         <button class="btn w-full sm:w-80 h-14 mb-5" wire:click="$dispatch('backPrevious')">{{ __('back') }}</button>
     </div>

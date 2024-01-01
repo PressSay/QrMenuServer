@@ -16,7 +16,6 @@ return new class extends Migration
             $table->unsignedBigInteger('dishId');
             $table->integer('amount');
             $table->primary(['customerId', 'dishId']);
-            $table->integer('promotion')->default(0);
             $table->softDeletes();
         });
     }

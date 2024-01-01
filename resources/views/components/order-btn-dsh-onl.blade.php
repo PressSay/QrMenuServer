@@ -1,6 +1,6 @@
-@props(['title', 'description', 'messDscript', 'price', 'quantity', 'mx', 'path' => '/image-dish/default.jpg', 'plusFunc', 'minusFunc'])
+@props(['title', 'description', 'messDscript', 'price', 'quantity', 'mx', 'path' => '/image-dish/default.jpg', 'plusFunc' => '', 'minusFunc' => '', 'isVisible' => 'visible'])
 
-<div class="w-80 h-40 rounded-tr-xlarge rounded-bl-xlarge shadow-md relative mx-2 my-4"
+<div class="w-80 h-40 rounded-tr-xlarge rounded-bl-xlarge shadow-md relative mx-2 my-4 {{ $isVisible }}"
     {{ $attributes->merge(['class' => 'sm:mx-' . $mx]) }}>
     <div class="absolute h-full w-full">
         <div class="w-full h-1/2 rounded-tr-xlarge bg-base-300"></div>
@@ -48,7 +48,8 @@
         </div>
     </div>
     <div class="absolute h-full w-full ">
-        <button wire:click="{{ $plusFunc }}" class="w-full h-1/2 btn-plus rounded-tr-xlarge opacity-0 cursor-pointer" {{-- onclick="alert('plus')" --}} />
-        <button wire:click="{{ $minusFunc }}" class="w-full h-1/2 btn-minus rounded-bl-xlarge opacity-0 cursor-pointer" {{-- onclick="alert('minus')" --}} />
+        {{-- {{ $slot }} --}}
+        <button wire:click="{{ $plusFunc }}" class="w-full h-1/2 btn-plus rounded-tr-xlarge opacity-0 cursor-pointer" ></button>
+        <button wire:click="{{ $minusFunc }}" class="w-full h-1/2 btn-minus rounded-bl-xlarge opacity-0 cursor-pointer" ></button>
     </div>
 </div>

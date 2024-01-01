@@ -18,7 +18,6 @@ class CustomerDishCrossRef extends Model
         'customerId',
         'dishId',
         'amount',
-        'promotion',
     ];
 
     public $incrementing = false;

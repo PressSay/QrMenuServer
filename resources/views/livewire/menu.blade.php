@@ -2,155 +2,279 @@
     <div class="md:flex md:flex-row-reverse relative">
         <div id="app-container"
             class="w-full md:w-1/2 xl:w-2/3 {{ $zIndexSecondLayout }} md:z-0 md:mx-1.5 md:relative absolute top-0 bg-base-100 h-screen {{ $isInvisibleApp }} md:block">
-            @switch($layout)
-                @case(2)
-                    <div class="block relative w-full">
-                        <x-nav-talwin-onl home="{{ __('nav.home') }}" register="{{ __('nav.register') }}" />
-                        @php
-                            $total = 0;
-                        @endphp
-                        <div class="flex justify-center">
-                            <div class="mb-8 flex flex-col items-center w-11/12" style="overflow: auto; height: fit;">
-                                @foreach ($arrQuantity as $key => $item)
-                                    @if ($item > 0)
-                                        @if ($columnRun == 0)
+            @if (Auth::check())
+                @switch($layout)
+                    @case(2)
+                        <div class="block relative w-full">
+                            <x-nav-talwin-onl home="{{ __('nav.home') }}" register="{{ __('nav.register') }}" search="true" />
+                            @php
+                                $total = 0;
+                            @endphp
+                            <div class="flex justify-center">
+                                <div class="mb-8 flex flex-col items-center w-11/12" style="overflow: auto; height: fit;">
+                                    @foreach ($arrQuantity as $key => $item)
+                                        @if ($item > 0)
+                                            @if ($columnRun == 0)
+                                                @php
+                                                    echo '<div class="flex xl:flex-row flex-col justify-evenly items-center w-full">';
+                                                @endphp
+                                            @endif
                                             @php
-                                                echo '<div class="flex xl:flex-row flex-col justify-evenly items-center w-full">';
+                                                $dish = App\Models\Dish::find($key);
+                                                $total = $total + $dish->cost * $item;
+                                            @endphp
+                                            <x-order-cfm-dsh mx=0 title="{{ $dish->name }}" price="{{ $dish->cost }}"
+                                                quantity="{{ $item }}"
+                                                onClick="$dispatch('trashCfm', { dishId: {{ $key }} })" />
+                                            @if ($columnRun == 1)
+                                                @php
+                                                    echo '</div>';
+                                                @endphp
+                                            @endif
+                                            @php
+                                                $columnRun = ($columnRun + 1) % 2;
+                                                $hasQuantityMoreThanZero = true;
                                             @endphp
                                         @endif
-                                        @php
-                                            $dish = App\Models\Dish::find($key);
-                                            $total = $total + $dish->cost * $item;
-                                        @endphp
-                                        <x-order-cfm-dsh mx=0 title="{{ $dish->name }}" price="{{ $dish->cost }}"
-                                            quantity="{{ $item }}"
-                                            onClick="$dispatch('trashCfm', { index: {{ $key }} })" />
-                                        @if ($columnRun == 1)
+                                        @if ($columnRun == 1 && array_key_last($arrQuantity) == $key && $hasQuantityMoreThanZero)
+                                            <div class="sm:w-96 rounded-tr-xlarge rounded-bl-xlarge relative mx-2 invisible">
+                                                <div class="hidden md:block visible"></div>
+                                            </div>
                                             @php
                                                 echo '</div>';
                                             @endphp
                                         @endif
-                                        @php
-                                            $columnRun = ($columnRun + 1) % 2;
-                                            $hasQuantityMoreThanZero = true;
-                                        @endphp
-                                    @endif
-                                    @if ($columnRun == 1 && array_key_last($arrQuantity) == $key && $hasQuantityMoreThanZero)
-                                        <div class="sm:w-96 rounded-tr-xlarge rounded-bl-xlarge relative mx-2 invisible">
-                                            <div class="hidden md:block visible"></div>
-                                        </div>
-                                        @php
-                                            echo '</div>';
-                                        @endphp
-                                    @endif
-                                @endforeach
-                            </div>
-                        </div>
-                        <div class="flex flex-col mx-2 container mx-auto mt-6">
-                            <div class="flex">
-                                <p class="font-bold text-lg mr-1">{{ __('dish.discount') }}</p>
-                                <p class="font-bold text-lg summary">6,000đ</p>
-                            </div>
-                            <div class="flex">
-                                <p class="font-bold text-lg mr-1">{{ __('dish.tax') }}(5%): </p>
-                                <p class="font-bold text-lg summary">{{ $total * 0.05 }} đ</p>
-                            </div>
-                            <div class="flex">
-                                <p class="font-bold text-lg mr-1">{{ __('dish.total') }}</p>
-                                <p class="font-bold text-lg summary">{{ $total }}</p>
-                            </div>
-                        </div>
-                        <div class="flex flex-col mx-2 sticky right-0 left-0 bottom-0">
-                            <div class="my-1 flex justify-center">
-                                {{ $customerId }}
-                            </div>
-                            <div class="flex justify-evenly items-center mx-1.5 ">
-                                <button wire:click="chooseMenu"
-                                    class="btn w-1/3 mx-1 my-3 rounded shadow-xl text-xs 
-                                sm:text-sm md:text-base border-2 btn-outline btn-base-content bg-base-100">{{ __('Menu') }}</button>
-                                <button wire:click="chooseImageCode"
-                                    class="btn w-1/3 mx-1 my-3 rounded shadow-xl text-xs 
-                                sm:text-sm md:text-base border-2 btn-outline btn-base-content bg-base-100">{{ __('QrCode') }}</button>
-                                <button wire:click="chooseMenu"
-                                    class="pay-cfm btn w-1/3 mx-1 my-3 rounded shadow-xl text-xs 
-                                sm:text-sm md:text-base border-2 btn-outline btn-base-content bg-base-100">{{ __('order') }}</button>
-                            </div>
-                        </div>
-                    </div>
-                @break
-
-                @case(3)
-                    <livewire:discount />
-                @break
-
-                @case(4)
-                    <livewire:genre />
-                @break
-
-                @case(5)
-                    <livewire:image />
-                @break
-
-                @case(6)
-                    <livewire:order />
-                @break
-
-                @case(7)
-                    <livewire:select />
-                @break
-
-                @case(8)
-                    <livewire:review />
-                @break
-
-                @case(9)
-                    <livewire:category />
-                @break
-
-                @case(1)
-                    <div class="block relative w-full ">
-                        <x-nav-talwin-onl home="{{ __('nav.home') }}" register="{{ __('nav.register') }}" />
-                        <div class="mb-8 flex flex-col items-center w-full" style="overflow: auto; height: fit;">
-                            @for ($i = 0; $i < $dishes->count(); $i += 2)
-                                <div class="flex xl:flex-row flex-col justify-evenly items-center w-full">
-                                    <x-order-btn-dsh-onl mx="0" title="{{ $dishes[$i]->name }}"
-                                        description="{{ __('dish.description') }}"
-                                        messDscript="{{ $dishes[$i]->description }}"
-                                        price="{{ __('dish.price', ['cur' => number_format($dishes[$i]->cost, 0)]) }}"
-                                        quantity="{{ $arrQuantity[$dishes[$i]->dishId] }}"
-                                        plusFunc="$dispatch('plusFunc', { index: {{ $dishes[$i]->dishId }} })"
-                                        minusFunc="$dispatch('minusFunc', { index: {{ $dishes[$i]->dishId }} })" />
-                                    @if ($i + 1 < $dishes->count())
-                                        <x-order-btn-dsh-onl mx="0" title="{{ $dishes[$i + 1]->name }}"
-                                            description="{{ __('dish.description') }}"
-                                            messDscript="{{ $dishes[$i + 1]->description }}"
-                                            price="{{ __('dish.price', ['cur' => number_format($dishes[$i + 1]->cost, 0)]) }}"
-                                            quantity="{{ $arrQuantity[$dishes[$i + 1]->dishId] }}"
-                                            plusFunc="$dispatch('plusFunc', { index: {{ $dishes[$i + 1]->dishId }} })"
-                                            minusFunc="$dispatch('minusFunc', { index: {{ $dishes[$i + 1]->dishId }} })" />
-                                    @else
-                                        <div class="sm:w-80 rounded-tr-xlarge rounded-bl-xlarge relative mx-2 invisible">
-                                            <div class="hidden md:block visible"></div>
-                                        </div>
-                                    @endif
+                                    @endforeach
                                 </div>
-                            @endfor
-                        </div>
-                        <div class="flex flex-col mx-2 sticky right-0 left-0 bottom-0">
-                            <div class="my-1 flex justify-center">
-                                {{ $categoryId }}
                             </div>
-                            <div class="flex justify-evenly items-center ">
-                                <button wire:click="chooseCategory"
-                                    class="btn w-1/2 mx-1 my-3 rounded shadow-xl text-xs sm:text-sm md:text-base border-2 btn-outline btn-base-content bg-base-100">{{ __('category') }}</button>
-                                <button wire:click="chooseCfm"
-                                    class="pay-cfm btn w-1/2 mx-1 my-3 rounded shadow-xl text-xs sm:text-sm md:text-base border-2 btn-outline btn-base-content bg-base-100">{{ __('order') }}</button>
+                            @php
+                                $customer = App\Models\Customer::find($customerId);
+                                $order = App\Models\Order::find($oldCustomerId);
+                                $discount = 0;
+                                $code = '';
+                                $totalTmp = $total;
+                                if ($customer) {
+                                    $discount = ($total * env('DISCOUNT')) / 100;
+                                    $totalTmp = $total - $discount;
+                                    $code = $customer->code;
+                                }
+                                if ($order) {
+                                    if ($order->promotion > 0) {
+                                        $discount = $order->promotion;
+                                        $discount = ($total * $discount) / 100;
+                                        $totalTmp = $total - $discount;
+                                    }
+                                }
+                                $total = $totalTmp;
+                            @endphp
+                            <div class="flex flex-col mx-2 container mx-auto mt-6">
+                                <div class="flex">
+                                    <p class="font-bold text-lg mr-1">{{ __('dish.discount') }}</p>
+                                    <p class="font-bold text-lg summary">{{ $discount }} đ</p>
+                                </div>
+                                <div class="flex">
+                                    <p class="font-bold text-lg mr-1">{{ __('dish.tax') }}(5%): </p>
+                                    <p class="font-bold text-lg summary">{{ $total * 0.05 }} đ</p>
+                                </div>
+                                <div class="flex">
+                                    <p class="font-bold text-lg mr-1">{{ __('dish.total') }}</p>
+                                    <p class="font-bold text-lg summary">{{ $total }}</p>
+                                </div>
+                            </div>
+                            <div class="flex flex-col mx-2 sticky right-0 left-0 bottom-0">
+                                <div class="flex justify-evenly items-center mx-1.5 ">
+                                    <button wire:click="chooseLayout(1)"
+                                        class="btn w-1/3 mx-1 my-3 rounded shadow-xl text-xs 
+                                sm:text-sm md:text-base border-2 btn-outline btn-base-content bg-base-100">{{ __('Menu') }}</button>
+                                    @if (!($customer || $order))
+                                        <button wire:click="chooseLayout(5)"
+                                            class="btn w-1/3 mx-1 my-3 rounded shadow-xl text-xs 
+                                sm:text-sm md:text-base border-2 btn-outline btn-base-content bg-base-100">{{ __('QrCode') }}</button>
+                                    @endif
+                                    <label for="my_modal_5"
+                                        class="pay-cfm btn w-1/3 mx-1 my-3 rounded shadow-xl text-xs 
+                        sm:text-sm md:text-base border-2 btn-outline btn-base-content bg-base-100">{{ __('order') }}</label>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                @break
+                    @break
 
-            @endswitch
+                    @case(3)
+                        <livewire:history-cfm-order :customerId="$revCustomerId" />
+                    @break
+
+                    @case(4)
+                        <livewire:revthanks />
+                    @break
+
+                    @case(5)
+                        <livewire:image />
+                    @break
+
+                    @case(6)
+                        <livewire:order />
+                    @break
+
+                    @case(7)
+                        <livewire:select />
+                    @break
+
+                    @case(8)
+                        <livewire:review />
+                    @break
+
+                    @case(9)
+                        <livewire:category />
+                    @break
+
+                    @case(10)
+                        <livewire:payment />
+                    @break
+
+                    @case(11)
+                        <livewire:profile />
+                    @break
+
+                    @case(12)
+                        
+                    @break
+
+                    @case(1)
+                        <div class="block relative w-full ">
+                            <x-nav-talwin-onl home="{{ __('nav.home') }}" register="{{ __('nav.register') }}"
+                                search="true" />
+                            <div class="mb-8 flex flex-col items-center w-full" style="overflow: auto; height: fit;">
+                                @php
+                                    $isFinish = false;
+                                    $isSetLastCol = false;
+                                @endphp
+                                @for ($i = 0; $i < 6; $i += 2)
+                                    <div class="flex xl:flex-row flex-col justify-evenly items-center w-full">
+                                        @php
+                                            $isVisible = $i < $dishes->count() ? 'block' : 'hidden';
+                                            $isVisible_ = $i + 1 < $dishes->count() ? 'block' : 'hidden';
+                                            // plus 2, because point value of $dishes->count() starts from 1
+                                            if (!$isFinish && $i + 2 > $dishes->count()) {
+                                                $isFinish = true;
+                                            }
+                                            if (!$isSetLastCol && $isFinish && $dishes->count() % 2 != 0) {
+                                                $isVisible_ = 'invisible';
+                                                $isSetLastCol = true;
+                                            }
+                                        @endphp
+                                        <x-order-btn-dsh-onl mx="0" isVisible="{{ $isVisible }}"
+                                            title="{{ $i < $dishes->count() ? $dishes[$i]->name : '' }}"
+                                            description="{{ __('dish.description') }}"
+                                            messDscript="{{ $i < $dishes->count() ? $dishes[$i]->description : '' }}"
+                                            price="{{ __('dish.price', ['cur' => number_format($i < $dishes->count() ? $dishes[$i]->cost : 0, 0)]) }}"
+                                            quantity="{{ $i < $dishes->count() ? $arrQuantity[$dishes[$i]->dishId] : 0 }}"
+                                            plusFunc="$dispatch('plusFunc', { index: {{ $i }} })"
+                                            minusFunc="$dispatch('minusFunc', { index: {{ $i }} })" />
+                                        <x-order-btn-dsh-onl mx="0" isVisible="{{ $isVisible_ }}"
+                                            title="{{ $i + 1 < $dishes->count() ? $dishes[$i + 1]->name : '' }}"
+                                            description="{{ __('dish.description') }}"
+                                            messDscript="{{ $i + 1 < $dishes->count() ? $dishes[$i + 1]->description : '' }}"
+                                            price="{{ __('dish.price', ['cur' => number_format($i + 1 < $dishes->count() ? $dishes[$i + 1]->cost : 0, 0)]) }}"
+                                            quantity="{{ $i + 1 < $dishes->count() ? $arrQuantity[$dishes[$i + 1]->dishId] : 0 }}"
+                                            plusFunc="$dispatch('plusFunc', { index: {{ $i + 1 }} })"
+                                            minusFunc="$dispatch('minusFunc', { index: {{ $i + 1 }} })" />
+                                    </div>
+                                @endfor
+                            </div>
+                            <div class="flex flex-col mx-2 sticky right-0 left-0 bottom-0">
+                                <div class="my-1 flex justify-center">
+                                    <div class="join">
+                                        <button class="join-item btn" wire:click="previousPage">«</button>
+                                        <button class="join-item btn">{{ $page }}</button>
+                                        <button class="join-item btn" wire:click="nextPage">»</button>
+                                    </div>
+                                </div>
+                                <div class="flex justify-evenly items-center ">
+                                    <button wire:click="chooseLayout(9)"
+                                        class="btn w-1/2 mx-1 my-3 rounded shadow-xl text-xs sm:text-sm md:text-base border-2 btn-outline btn-base-content bg-base-100">{{ __('category') }}</button>
+                                    <button wire:click="chooseLayout(2)"
+                                        class="pay-cfm btn w-1/2 mx-1 my-3 rounded shadow-xl text-xs sm:text-sm md:text-base border-2 btn-outline btn-base-content bg-base-100">{{ __('order') }}</button>
+                                </div>
+                            </div>
+                        </div>
+                    @break
+                @endswitch
+            @else
+                <div class="flex justify-center mt-5">
+                    <a wire:click="$dispatch('home')">
+                        <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
+                    </a>
+                </div>
+                <form class="mx-5  my-7" method="POST" action="{{ route('register') }}">
+                    @csrf
+
+                    <!-- Name -->
+                    <div>
+                        <x-input-label for="name" :value="__('Name')" />
+                        <x-text-input id="name" class="block mt-1 w-full" type="text" name="name"
+                            :value="old('name')" required autofocus autocomplete="name" />
+                        <x-input-error :messages="$errors->get('name')" class="mt-2" />
+                    </div>
+
+                    <!-- Email Address -->
+                    <div class="mt-4">
+                        <x-input-label for="email" :value="__('Email')" />
+                        <x-text-input id="email" class="block mt-1 w-full" type="email" name="email"
+                            :value="old('email')" required autocomplete="username" />
+                        <x-input-error :messages="$errors->get('email')" class="mt-2" />
+                    </div>
+
+                    <!-- Password -->
+                    <div class="mt-4">
+                        <x-input-label for="password" :value="__('Password')" />
+
+                        <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required
+                            autocomplete="new-password" />
+
+                        <x-input-error :messages="$errors->get('password')" class="mt-2" />
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div class="mt-4">
+                        <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
+
+                        <x-text-input id="password_confirmation" class="block mt-1 w-full" type="password"
+                            name="password_confirmation" required autocomplete="new-password" />
+
+                        <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
+                    </div>
+
+                    <!-- Phone Number -->
+                    <div class="mt-4">
+                        <x-input-label for="phoneNumber" :value="__('Phone')" />
+                        <x-text-input id="phoneNumber" class="block mt-1 w-full" type="text" name="phoneNumber"
+                            :value="old('phoneNumber')" required autocomplete="" />
+                        <x-input-error :messages="$errors->get('phoneNumber')" class="mt-2" />
+                    </div>
+
+
+                    <!-- Address -->
+                    <div class="mt-4">
+                        <x-input-label for="address" :value="__('Address')" />
+                        <x-text-input id="address" class="block mt-1 w-full" type="text" name="address"
+                            :value="old('address')" required autocomplete="" />
+                        <x-input-error :messages="$errors->get('address')" class="mt-2" />
+                    </div>
+
+
+                    <div class="flex items-center justify-end mt-4">
+                        <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
+                            href="{{ route('login') }}">
+                            {{ __('Already registered?') }}
+                        </a>
+
+                        <x-primary-button class="ms-4">
+                            {{ __('Register') }}
+                        </x-primary-button>
+                    </div>
+                </form>
+            @endif
+
 
         </div>
         <div
@@ -164,7 +288,7 @@
                                                     33-23.5 56.5T480-80ZM300-260h360v-304q0-75-52.5-127.5T480-744q-75 0-127.5 52.5T300-564v304Z" />
                     </svg>
                 </button>
-                <button class="btn p-2 shadow-md my-1.5 mx-1.5">
+                <button class="btn p-2 shadow-md my-1.5 mx-1.5" wire:click="chooseLayout(11)">
                     <svg width="32" height="32" viewBox="0 0 32 32" fill="none"
                         xmlns="http://www.w3.org/2000/svg">
                         <path class="fill-base-content" d="M16 15C13.8 15 12 14.3 10.6 12.9C9.2 11.5 8.5 9.7 8.5 7.5C8.5 5.3 9.2 3.5
@@ -179,8 +303,7 @@
                                                     6.7 22.7167 4.6 23.75C4.13333 23.9833 3.75 24.3417 3.45 24.825C3.15 25.3083 3 25.8167 3 26.35V28.05ZM16
                                                     12C17.3 12 18.375 11.575 19.225 10.725C20.075 9.875 20.5 8.8 20.5 7.5C20.5 6.2 20.075 5.125 19.225
                                                     4.275C18.375 3.425 17.3 3 16 3C14.7 3 13.625 3.425 12.775 4.275C11.925 5.125 11.5 6.2 11.5 7.5C11.5
-                                                    8.8 11.925 9.875 12.775 10.725C13.625 11.575 14.7 12 16 12Z"
-                            fill="#3C691B" />
+                                                    8.8 11.925 9.875 12.775 10.725C13.625 11.575 14.7 12 16 12Z" />
                     </svg>
                 </button>
             </div>
@@ -228,7 +351,7 @@
             <div class="absolute w-full bg-base-100 rounded-tr-xlarge rounded-tl-xlarge h-80"
                 style="top: max(60%, 20rem)">
                 <div class="flex justify-evenly my-4">
-                    <x-btn-nav-layout title="Review" onClick="chooseReview">
+                    <x-btn-nav-layout title="Review" onClick="chooseLayout(8)">
                         <svg xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 -960 960 960"
                             width="48">
                             <path class="fill-base-content"
@@ -237,7 +360,7 @@
                                                         24-18 42t-42 18H240L80-80Zm134-220h606v-520H140v600l74-80Zm-74 0v-520 520Z" />
                         </svg>
                     </x-btn-nav-layout>
-                    <x-btn-nav-layout title="My Order" onClick="chooseOrderList">
+                    <x-btn-nav-layout title="My Order" onClick="chooseLayout(6)">
                         <svg xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 -960 960 960"
                             width="48">
                             <path class="fill-base-content"
@@ -260,7 +383,7 @@
                                                         0 202-22t143-58q-49-36-143-58t-202-22q-108 0-202 22t-143 58q49 36 143 58t202 22Zm0-80Z" />
                         </svg>
                     </x-btn-nav-layout>
-                    <x-btn-nav-layout title="Online Store" onClick="chooseMenu">
+                    <x-btn-nav-layout title="Online Store" onClick="chooseLayout(1)">
                         <svg xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 -960 960 960"
                             width="48">
                             <path class="fill-base-content"
@@ -274,8 +397,7 @@
             </div>
         </div>
     </div>
-
-    <!-- Put this part before </body> tag -->
+    {{-- search box --}}
     <input type="checkbox" id="my_modal_6" class="modal-toggle" />
     <div class="modal ">
         <div class="modal-box">
@@ -286,6 +408,46 @@
             </div>
             <div class="flex justify-center">
                 <label for="my_modal_6" class="btn btn-xs">{{ __('nav.close') }}</label>
+            </div>
+        </div>
+    </div>
+    {{-- confirm box --}}
+    <input type="checkbox" id="my_modal_5" class="modal-toggle" />
+    <div class="modal" role="dialog">
+        <div class="modal-box">
+            <div class="flex flex-col justify-items-center">
+                @if ($oldCustomerId == 0)
+                    <div class="form-control">
+                        <label class="label cursor-pointer">
+                            <span class="label-text">{{ __('crash') }}</span>
+                            <input wire:model="payment" value="crash" type="radio" name="payment"
+                                class="radio checked:bg-red-500" checked />
+                        </label>
+                    </div>
+                    <div class="form-control">
+                        <label class="label cursor-pointer">
+                            <span class="label-text">{{ __('pm_visa') }}</span>
+                            <input wire:model="payment" type="radio" name="payment" value="pm_visa"
+                                class="radio checked:bg-blue-500" checked />
+                        </label>
+                    </div>
+                    <div class="flex justify-center">
+                        {{ $payment }}
+                    </div>
+                @endif
+                <button wire:click="payCfm" onclick="document.getElementById('closeChoosePayment').click();"
+                    class="mx-auto pay-cfm btn w-1/2 mx-1 my-3 rounded shadow-xl text-xs sm:text-sm md:text-base border-2 border-base-content">
+                    <svg class="mr-2" width="24" height="24" viewBox="0 0 16 16" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path class="stroke-base-content"
+                            d="M3.6 5C3.27 5 2.9875 4.8825 2.7525 4.6475C2.5175 4.4125 2.4 4.13 2.4 3.8V1.2C2.4 0.87 2.5175 0.5875 2.7525 0.3525C2.9875 0.1175 3.27 0 3.6 0H12.4C12.73 0 13.0125 0.1175 13.2475 0.3525C13.4825 0.5875 13.6 0.87 13.6 1.2V3.8C13.6 4.13 13.4825 4.4125 13.2475 4.6475C13.0125 4.8825 12.73 5 12.4 5H3.6ZM3.6 3.8H12.4V1.2H3.6V3.8ZM1.2 16C0.87 16 0.5875 15.8825 0.3525 15.6475C0.1175 15.4125 0 15.13 0 14.8V13.4H16V14.8C16 15.13 15.8825 15.4125 15.6475 15.6475C15.4125 15.8825 15.13 16 14.8 16H1.2ZM0 12.8L2.9 6.32C3.00667 6.10667 3.15735 5.93333 3.35206 5.8C3.54677 5.66667 3.75608 5.6 3.98 5.6H12.02C12.2439 5.6 12.4532 5.66667 12.6479 5.8C12.8426 5.93333 12.9933 6.10667 13.1 6.32L16 12.8H0ZM5.2 11.2H6C6.10667 11.2 6.2 11.16 6.28 11.08C6.36 11 6.4 10.9067 6.4 10.8C6.4 10.6933 6.36 10.6 6.28 10.52C6.2 10.44 6.10667 10.4 6 10.4H5.2C5.09333 10.4 5 10.44 4.92 10.52C4.84 10.6 4.8 10.6933 4.8 10.8C4.8 10.9067 4.84 11 4.92 11.08C5 11.16 5.09333 11.2 5.2 11.2ZM5.2 9.6H6C6.10667 9.6 6.2 9.56 6.28 9.48C6.36 9.4 6.4 9.30667 6.4 9.2C6.4 9.09333 6.36 9 6.28 8.92C6.2 8.84 6.10667 8.8 6 8.8H5.2C5.09333 8.8 5 8.84 4.92 8.92C4.84 9 4.8 9.09333 4.8 9.2C4.8 9.30667 4.84 9.4 4.92 9.48C5 9.56 5.09333 9.6 5.2 9.6ZM5.2 8H6C6.10667 8 6.2 7.96 6.28 7.88C6.36 7.8 6.4 7.70667 6.4 7.6C6.4 7.49333 6.36 7.4 6.28 7.32C6.2 7.24 6.10667 7.2 6 7.2H5.2C5.09333 7.2 5 7.24 4.92 7.32C4.84 7.4 4.8 7.49333 4.8 7.6C4.8 7.70667 4.84 7.8 4.92 7.88C5 7.96 5.09333 8 5.2 8ZM7.6 11.2H8.4C8.50667 11.2 8.6 11.16 8.68 11.08C8.76 11 8.8 10.9067 8.8 10.8C8.8 10.6933 8.76 10.6 8.68 10.52C8.6 10.44 8.50667 10.4 8.4 10.4H7.6C7.49333 10.4 7.4 10.44 7.32 10.52C7.24 10.6 7.2 10.6933 7.2 10.8C7.2 10.9067 7.24 11 7.32 11.08C7.4 11.16 7.49333 11.2 7.6 11.2ZM7.6 9.6H8.4C8.50667 9.6 8.6 9.56 8.68 9.48C8.76 9.4 8.8 9.30667 8.8 9.2C8.8 9.09333 8.76 9 8.68 8.92C8.6 8.84 8.50667 8.8 8.4 8.8H7.6C7.49333 8.8 7.4 8.84 7.32 8.92C7.24 9 7.2 9.09333 7.2 9.2C7.2 9.30667 7.24 9.4 7.32 9.48C7.4 9.56 7.49333 9.6 7.6 9.6ZM7.6 8H8.4C8.50667 8 8.6 7.96 8.68 7.88C8.76 7.8 8.8 7.70667 8.8 7.6C8.8 7.49333 8.76 7.4 8.68 7.32C8.6 7.24 8.50667 7.2 8.4 7.2H7.6C7.49333 7.2 7.4 7.24 7.32 7.32C7.24 7.4 7.2 7.49333 7.2 7.6C7.2 7.70667 7.24 7.8 7.32 7.88C7.4 7.96 7.49333 8 7.6 8ZM10 11.2H10.8C10.9067 11.2 11 11.16 11.08 11.08C11.16 11 11.2 10.9067 11.2 10.8C11.2 10.6933 11.16 10.6 11.08 10.52C11 10.44 10.9067 10.4 10.8 10.4H10C9.89333 10.4 9.8 10.44 9.72 10.52C9.64 10.6 9.6 10.6933 9.6 10.8C9.6 10.9067 9.64 11 9.72 11.08C9.8 11.16 9.89333 11.2 10 11.2ZM10 9.6H10.8C10.9067 9.6 11 9.56 11.08 9.48C11.16 9.4 11.2 9.30667 11.2 9.2C11.2 9.09333 11.16 9 11.08 8.92C11 8.84 10.9067 8.8 10.8 8.8H10C9.89333 8.8 9.8 8.84 9.72 8.92C9.64 9 9.6 9.09333 9.6 9.2C9.6 9.30667 9.64 9.4 9.72 9.48C9.8 9.56 9.89333 9.6 10 9.6ZM10 8H10.8C10.9067 8 11 7.96 11.08 7.88C11.16 7.8 11.2 7.70667 11.2 7.6C11.2 7.49333 11.16 7.4 11.08 7.32C11 7.24 10.9067 7.2 10.8 7.2H10C9.89333 7.2 9.8 7.24 9.72 7.32C9.64 7.4 9.6 7.49333 9.6 7.6C9.6 7.70667 9.64 7.8 9.72 7.88C9.8 7.96 9.89333 8 10 8Z"
+                            fill="#3C691B" />
+                    </svg>
+                    {{ __('confirm') }}
+                </button>
+            </div>
+            <div class="modal-action">
+                <label id="closeChoosePayment" for="my_modal_5" class="btn">Close!</label>
             </div>
         </div>
     </div>
